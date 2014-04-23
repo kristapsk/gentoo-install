@@ -40,6 +40,6 @@ SYSTEM_TOOLS="
     sys-process/lsof
 "
 
-# Supported bootloaders: grub, grub-legacy
-BOOTLOADER="grub"
+# Supported bootloaders: grub2, grub-legacy
+BOOTLOADER="grub2"
 
