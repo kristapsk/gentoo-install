@@ -38,6 +38,9 @@ cat ${make_conf}.dist |
 	sed "s/USE=.*/USE=\"$USE\"/" > $make_conf
 num_cores="`nproc`"
 echo "MAKEOPTS=\"-j$((num_cores + 1))\"" >> $make_conf
+if [ "$SYNC" != "" ]; then
+    echo "SYNC=\"$SYNC\"" >> $make_conf
+fi
 
 echo --- Chrooting
 
