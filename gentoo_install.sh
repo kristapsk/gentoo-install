@@ -18,7 +18,7 @@ case $MACHINE in
     i686) GENTOO_ARCH=x86 ;;
     x86_64) GENTOO_ARCH=amd64 ;;
     *)
-        echo "Unknown / unsupported machine $MACHINE!"
+        echo "Unknown / unsupported machine type $MACHINE!"
         exit 1
     ;;
 esac
@@ -33,9 +33,9 @@ echo --- Configuring the compile options
 
 make_conf="/mnt/gentoo/etc/portage/make.conf"
 cp $make_conf ${make_conf}.dist
-cat ${make_conf}.dist |
-	sed "s/CFLAGS=.*/CFLAGS=\"$CFLAGS\"/" |
-	sed "s/USE=.*/USE=\"$USE\"/" > $make_conf
+#cat ${make_conf}.dist |
+sed -i "s/CFLAGS=.*/CFLAGS=\"$CFLAGS\"/" $make_conf
+sed -i "s/USE=.*/USE=\"$USE\"/" $make_conf
 num_cores="`nproc`"
 echo "MAKEOPTS=\"-j$((num_cores + 1))\"" >> $make_conf
 if [ "$SYNC" != "" ]; then
@@ -56,6 +56,7 @@ cp chroot-part.sh /mnt/gentoo/
 chroot /mnt/gentoo /bin/bash /chroot-part.sh 
 
 umount -l /mnt/gentoo/dev
+umount -l /mnt/gentoo/sys
 umount -l /mnt/gentoo/proc
 
 
