@@ -35,9 +35,49 @@ make modules_install
 cp arch/x86/boot/bzImage /boot/kernel-auto
 
 echo --- Installing Necessary System Tools
-# FixME: Do the stuff
+
+# 1) check package names and set use flags if needed
+emerge_list=""
+while read tool_line; do
+    if grep -qs "\[" <<< "$tool_line"; then
+        tool="`echo "$tool_line" | sed "s/\[.*//"`"
+        use_changes="`echo "$tool_line" | sed "s/.*\[//" | sed "s/\].*//" | tr ',' ' '`"
+    else
+        tool="$tool_line"
+        use_changes=""
+    fi
+    if [ -d "/usr/portage/$tool" ]; then
+        if [ "$use_changes" != "" ]; then
+            echo "$tool $use_changes" >> /etc/portage/package.use
+        fi
+    else
+        echo "Unknown / non-existing required package: $tool, aborting."
+        if ! grep -qs "/" <<< "$tool"; then
+            echo "Full package names must be specified, e.g. 'app-admin/syslog-ng', not 'syslog-ng'." 
+        fi
+        exit 1
+    fi
+done <<< "$SYSTEM_TOOLS"
+
+# 2) emerge
+emerge $emerge_list || exit 1
+
+# 3) do specific things needed for each tool
+# FixMe: hardcoded currently, may make this nicer in future
 
 rc-update add sshd default
+
+if grep -qs "app-admin/syslog-ng" <<< "$emerge_list"; then
+    rc-update add syslog-ng default
+elif grep -qs "app-admin/sysklogd" <<< "$emerge_list"; then
+    rc-update add sysklogd default
+elif grep -qs "app-admin/metalog" <<< "$emerge_list"; then
+    rc-update add metalog default
+fi
+
+if grep -qs "sys-process/cronie" <<< "$emerge_list"; then
+    rc-update add cronie default
+fi
 
 # FixMe: auto-detect those
 rootdev=/dev/sda
