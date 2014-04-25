@@ -11,14 +11,33 @@ SYSTEM_PROFILE="hardened/linux/amd64"
 
 TIMEZONE="Europe/Riga"
 
+LOCALES="
+    en_US ISO-8859-1
+    en_US.UTF-8 UTF-8
+    lv_LV ISO-8859-13
+    lv_LV.UTF-8 UTF-8
+"
+DEFAULT_LOCALE="lv_LV.UTF-8"
+
 # Leave blank for default
 KERNEL_EBUILD="hardened-sources"
+# You can specify kernel .config file name (absolute/relative path prior
+# chrooting). If left blank, "make localconfig" is used to generate
+# configuration.
+USE_KERNEL_CONFIG=""
+
+TARGET_HOSTNAME="tux-box"
+
+ROOT_PASSWORD="somepass"
 
 # Necessary system tools to emerge
 # Specific USE flag changes can be specified in square brackets
 # Additionally, the following ones will be always emerged under certain
 # circumstances:
 #   * net-misc/dhcpcd - if network configured via DHCP
+#   * sys-fs/jfsutils - if JFS partition(s) detected
+#   * sys-fs/reiserfsprogs - if ReiserFS partition(s) detected
+#   * sys-fs/xfsprogs - if XFS partition(s) detected
 SYSTEM_TOOLS="
     app-admin/logcheck
     app-admin/logrotate
