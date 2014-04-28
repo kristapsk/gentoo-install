@@ -1,4 +1,3 @@
-NOT YET FINISHED!!!
 
 Fast HOWTO:
 * Boot into LiveCD (best into recent one)
@@ -16,6 +15,10 @@ from old Gentoo LiveCD with ethXX style names
 * Missing configuration of /etc/rc.conf, /etc/conf.d/keymaps,
 /etc/conf.d/hwclock, /etc/inittab, ...
 * PPPoE client (net-dialup/ppp) is not detected and installed automatically
-
-
+* Sometimes stage3 download step at the beginning will give you "No such
+directory 'releases/amd64/current-iso'". That is because of missing files on
+some mirrors, default mirror "gentoo.distfiles.org" just randomly switches
+between them. Solution is to retry until it works.
+* You may need to manually press some Enter's during kernel's configuration.
+* If using GRUB Legacy, boot partition must be "(hd0,0)".
 

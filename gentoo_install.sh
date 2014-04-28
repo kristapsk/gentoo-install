@@ -14,14 +14,21 @@ if ! grep -qs /mnt/gentoo /proc/mounts; then
 fi
 
 # Some configuration checks
+if [ "$USE_KERNEL_CONFIG" != "" ] && [ ! -f "$USE_KERNEL_CONFIG" ]; then
+    echo "Kernel configuration file $USE_KERNEL_CONFIG not found!"
+    exit 1
+fi
+
 if [ "$TARGET_HOSTNAME" == "" ]; then
     echo "Hostname in configuration blank, cannot continue!"
     exit 1
 fi
+
 if [ "$ROOT_PASSWORD" == "" ]; then
     echo "root password in configuration blank, cannot continue!"
     exit 1
 fi
+
 
 MACHINE="`uname -m`"
 case $MACHINE in

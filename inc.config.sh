@@ -22,8 +22,7 @@ DEFAULT_LOCALE="lv_LV.UTF-8"
 # Leave blank for default
 KERNEL_EBUILD="hardened-sources"
 # You can specify kernel .config file name (absolute/relative path prior
-# chrooting). If left blank, "make localconfig" is used to generate
-# configuration.
+# chrooting). If left blank, "make localyesconfig" is used.
 USE_KERNEL_CONFIG=""
 
 TARGET_HOSTNAME="tux-box"

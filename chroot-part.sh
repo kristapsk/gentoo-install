@@ -53,12 +53,23 @@ emerge $KERNEL_EBUILD
 cd /usr/src/linux
 if [ -f /usr/src/use_kernel_config ]; then
     cp /usr/src/use_kernel_config .config
+#    newconf_count=$((`make listnewconfig|wc -l`-1))
+#    if (( "$newconf_count" > "0" )); then
+#        seq 1 $newconf_count | while read line; do echo -en "\n"; done | make oldconfig
+#    fi
 else
-    make localconfig
+#    newconf_count=$((`make listnewconfig|wc -l`-1))
+#    if (( "$newconf_count" > "0" )); then
+#        # Just hit Enter for each new config parameter and use default values.
+#        seq 1 $((`make listnewconfig|wc -l`-1)) | while read line; do echo -en "\n"; done | make localyesconfig
+#    else
+        make localyesconfig
+#    fi
 fi
+kernel_version="`make kernelversion`"
 make -j$((num_cores + 1))
 make modules_install
-cp arch/x86/boot/bzImage /boot/kernel-auto
+cp arch/x86/boot/bzImage /boot/kernel-$kernel_version-auto
 
 
 echo --- Configuring Filesystems
@@ -175,6 +186,10 @@ elif grep -qs "sys-process/fcron" <<< "$emerge_list"; then
     crontab /etc/crontab
 fi
 
+if grep -qs "net-misc/ntp" <<< "$emerge_list"; then
+    rc-update add ntpd default
+fi
+
 rc-update add sshd default
 
 
@@ -206,11 +221,13 @@ case $BOOTLOADER in
         echo "default 0" > /boot/grub/grub.conf
         echo "timeout 5" >> /boot/grub/grub.conf
         echo >> /boot/grub/grub.conf
-        echo "title Gentoo Linux (auto-installed default)" >> /boot/grub/grub.conf
-        echo "root $rootgrub" >> /boot/grub/grub.conf
-        echo "kernel /boot/kernel-auto root=$rootpart" >> /boot/grub/grub.conf
+        echo "title Gentoo Linux $kernel_version (auto)" >> /boot/grub/grub.conf
+        # FixMe: fix auto-detecting of /boot partition
+        #echo "root $rootgrub" >> /boot/grub/grub.conf
+        echo "root (hd0,0)" >> /boot/grub/grub.conf
+        echo "kernel /boot/kernel-$kernel_version-auto root=$rootpart" >> /boot/grub/grub.conf
         
-        grub-install --no-floppy $rootdev
+        grub-install --no-floppy $bootdev
     ;;
     *)
         echo FATAL: Unknown bootloader: $BOOTLOADER
@@ -218,5 +235,5 @@ case $BOOTLOADER in
     ;;
 esac
 
-echo "-- All (not yet) DONE, reboot to finish."
+echo "-- All DONE, reboot to finish."
 
