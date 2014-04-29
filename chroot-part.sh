@@ -192,6 +192,9 @@ fi
 
 rc-update add sshd default
 
+if grep -qs "app-portage/layman"; then
+    echo "source /var/lib/layman/make.conf" >> /etc/portage/make.conf
+fi
 
 echo --- Configuring the Bootloader
 
