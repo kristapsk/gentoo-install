@@ -168,6 +168,9 @@ emerge $emerge_list || exit 1
 
 if grep -qs "app-admin/syslog-ng" <<< "$emerge_list"; then
     rc-update add syslog-ng default
+    if grep -qs "app-admin/logcheck" <<< "$emerge_list"; then
+        sed -i '/options /a\\towner(root);\n\n\t## (Make log files group-readable by logcheck)\n\tgroup(logcheck);\n\tperm(0640);\n' /etc/syslog-ng/syslog-ng.conf
+    fi
 elif grep -qs "app-admin/sysklogd" <<< "$emerge_list"; then
     rc-update add sysklogd default
 elif grep -qs "app-admin/metalog" <<< "$emerge_list"; then
