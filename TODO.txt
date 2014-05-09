@@ -1,2 +1,8 @@
 * /mnt/cdrom into /etc/fstab
 
+* All different logging daemons have completely different default configs,
+logrotate do not rotate everything by default, logcheck either does not check
+all or tries to check non-existing logfiles (in case of syslog-ng default
+config), which causes errors. Also see
+<http://www.gentoo.org/doc/en/security/security-handbook.xml?part=1&chap=3>.
+
