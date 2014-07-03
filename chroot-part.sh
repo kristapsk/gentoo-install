@@ -203,7 +203,7 @@ echo --- Configuring the Bootloader
 
 grep -v rootfs /proc/mounts > /etc/mtab
 bootpart="`df /boot | tail -n 1 | sed 's/\s\+/\t/g' | cut -f 1`"
-bootdev="`lsblk -is $bootpart -o NAME | tail -n+3 | perl -pe 's/^([^A-Za-z0-9_]+)/length($1)."\t"/ge' | sort -nsr | cut -f 2`"
+bootdev="/dev/`lsblk -is $bootpart -o NAME | tail -n+3 | perl -pe 's/^([^A-Za-z0-9_]+)/length($1)."\t"/ge' | sort -nsr | cut -f 2`"
 
 
 if [ "$BOOTLOADER" == "" ]; then
