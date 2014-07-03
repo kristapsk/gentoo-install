@@ -85,7 +85,7 @@ echo --- Configuring Networking
 echo "hostname=\"$TARGET_HOSTNAME\"" > /etc/conf.d/hostname
 emerge --noreplace netifrc
 net_iface="`route -n | grep "^0.0.0.0" | sed 's/\s\+/\t/g' | cut -f 8`"
-if pgrep dhcpcd > /dev/null; then
+if [ "`cat /use_dhcpcd.txt`" == "1" ]; then
     echo "config_$net_iface=\"dhcp\"" >> /etc/conf.d/net
     needs_dhcpcd=1
 else

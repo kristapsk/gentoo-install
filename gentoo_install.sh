@@ -58,6 +58,13 @@ if [ "$SYNC" != "" ]; then
     echo "SYNC=\"$SYNC\"" >> $make_conf
 fi
 
+echo --- Checking for DHCP
+
+touch /mnt/gentoo/use_dhcpcd.txt
+if pgrep dhcpcd > /dev/null; then
+    echo "1" > /mnt/gentoo/use_dhcpcd.txt
+fi
+
 echo --- Chrooting
 
 cp -L /etc/resolv.conf /mnt/gentoo/etc/
