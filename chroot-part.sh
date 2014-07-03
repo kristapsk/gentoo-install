@@ -195,7 +195,7 @@ fi
 
 rc-update add sshd default
 
-if grep -qs "app-portage/layman"; then
+if grep -qs "app-portage/layman" <<< "$emerge_list"; then
     echo "source /var/lib/layman/make.conf" >> /etc/portage/make.conf
 fi
 
