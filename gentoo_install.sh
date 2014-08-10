@@ -32,8 +32,8 @@ fi
 
 MACHINE="`uname -m`"
 case $MACHINE in
-    i686) GENTOO_ARCH=x86 ;;
-    x86_64) GENTOO_ARCH=amd64 ;;
+    i686) GENTOO_ARCH=x86 ; GENTOO_SUBARCH=i686 ;;
+    x86_64) GENTOO_ARCH=amd64 ; GENTOO_SUBARCH=amd64 ;;
     *)
         echo "Unknown / unsupported machine type $MACHINE!"
         exit 1
@@ -43,7 +43,7 @@ esac
 echo === Installing Gentoo GNU/Linux for $GENTOO_ARCH
 
 cd /mnt/gentoo
-wget "$GENTOO_MIRROR/releases/$GENTOO_ARCH/current-iso/stage3-$GENTOO_ARCH-????????.tar.bz2" || exit 1
+wget "$GENTOO_MIRROR/releases/$GENTOO_ARCH/current-iso/stage3-$GENTOO_SUBARCH-????????.tar.bz2" || exit 1
 tar xvjpf stage3-*.tar.bz2
 
 echo --- Configuring the compile options
