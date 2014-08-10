@@ -214,6 +214,7 @@ case $BOOTLOADER in
         echo ------ Using GRUB2
         emerge sys-boot/grub
         grub2-install $bootdev
+        grub2-mkconfig -o /boot/grub/grub.cfg
     ;;
     grub-legacy)
         echo ------ Using GRUB Legacy
