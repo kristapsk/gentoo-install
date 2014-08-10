@@ -44,7 +44,7 @@ echo === Installing Gentoo GNU/Linux for $GENTOO_ARCH
 
 cd /mnt/gentoo
 wget "$GENTOO_MIRROR/releases/$GENTOO_ARCH/current-iso/stage3-$GENTOO_SUBARCH-????????.tar.bz2" || exit 1
-tar xvjpf stage3-*.tar.bz2
+tar xvjpf stage3-*.tar.bz2 || exit 1
 
 echo --- Configuring the compile options
 
