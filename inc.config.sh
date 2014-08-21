@@ -3,8 +3,20 @@
 GENTOO_MIRROR="ftp://distfiles.gentoo.org"
 CFLAGS="-march=native -O2 -pipe"
 USE="-bindist mmx sse sse2 -X vim-syntax"
+
 # optional make.conf settings (leave blank for defaults)
+
 SYNC=""
+
+INPUT_DEVICES=""
+VIDEO_CARDS=""
+LINGUAS=""
+
+LIBREOFFICE_EXTENSIONS=""
+NGINX_MODULES_HTTP=""
+NGINX_MODULES_MAIL=""
+QEMU_SOFTMMU_TARGETS=""
+QEMU_USER_TARGETS=""
 
 # System profile - leave blank to use installation CD default one
 SYSTEM_PROFILE="hardened/linux/amd64"
@@ -24,6 +36,8 @@ KERNEL_EBUILD="hardened-sources"
 # You can specify kernel .config file name (absolute/relative path prior
 # chrooting). If left blank, "make localyesconfig" is used.
 USE_KERNEL_CONFIG=""
+# Specify kernel binary blob ebuilds here, if needed.
+KERNEL_EXTRA_FIRMWARE=""
 
 TARGET_HOSTNAME="tux-box"
 

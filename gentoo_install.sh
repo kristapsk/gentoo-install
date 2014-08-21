@@ -43,6 +43,7 @@ esac
 echo === Installing Gentoo GNU/Linux for $GENTOO_ARCH
 
 cd /mnt/gentoo
+rm -f stage3-*.tar.bz2
 wget "$GENTOO_MIRROR/releases/$GENTOO_ARCH/current-iso/stage3-$GENTOO_SUBARCH-????????.tar.bz2" || exit 1
 tar xvjpf stage3-*.tar.bz2 || exit 1
 
@@ -56,6 +57,33 @@ num_cores="`nproc`"
 echo "MAKEOPTS=\"-j$((num_cores + 1))\"" >> $make_conf
 if [ "$SYNC" != "" ]; then
     echo "SYNC=\"$SYNC\"" >> $make_conf
+fi
+if [ "$INPUT_DEVICES" != "" ]; then
+    echo "INPUT_DEVICES=\"$INPUT_DEVICES\"" >> $make_conf
+fi
+if [ "$VIDEO_CARDS" != "" ]; then
+    echo "VIDEO_CARDS=\"$VIDEO_CARDS\"" >> $make_conf
+fi
+if [ "$LINGUAS" != "" ]; then
+    echo "LINGUAS=\"$LINGUAS\"" >> $make_conf
+fi
+
+# Package specific make.conf options
+
+if [ "$LIBREOFFICE_EXTENSIONS" != "" ]; then
+    echo "LIBREOFFICE_EXTENSIONS=\"$LIBREOFFICE_EXTENSIONS\"" >> $make_conf
+fi
+if [ "$NGINX_MODULES_HTTP" != "" ]; then
+    echo "NGINX_MODULES_HTTP=\"$NGINX_MODULES_HTTP\"" >> $make_conf
+fi
+if [ "$NGINX_MODULES_MAIL" != "" ]; then
+    echo "NGINX_MODULES_MAIL=\"$NGINX_MODULES_MAIL\"" >> $make_conf
+fi
+if [ "$QEMU_SOFTMMU_TARGETS" != "" ]; then
+    echo "QEMU_SOFTMMU_TARGETS=\"$QEMU_SOFTMMU_TARGETS\"" >> $make_conf
+fi
+if [ "$QEMU_USER_TARGETS" != "" ]; then
+    echo "QEMU_USER_TARGETS=\"$QEMU_USER_TARGETS\"" >> $make_conf
 fi
 
 echo --- Checking for DHCP

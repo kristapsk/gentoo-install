@@ -50,6 +50,9 @@ if [ "$KERNEL_EBUILD" == "" ]; then
 	KERNEL_EBUILD=gentoo-sources
 fi
 emerge $KERNEL_EBUILD
+if [ "$KERNEL_EXTRA_FIRMWARE" != "" ]; then
+    emerge $KERNEL_EXTRA_FIRMWARE
+fi
 cd /usr/src/linux
 if [ -f /usr/src/use_kernel_config ]; then
     cp /usr/src/use_kernel_config .config
@@ -69,7 +72,7 @@ fi
 kernel_version="`make kernelversion`"
 make -j$((num_cores + 1))
 make modules_install
-cp arch/x86/boot/bzImage /boot/kernel-$kernel_version-auto
+cp arch/x86/boot/bzImage /boot/kernel-$kernel_version-auto || exit 1
 
 
 echo --- Configuring Filesystems
@@ -122,7 +125,8 @@ while read tool_line; do
             use_changes=""
         fi
         emerge_list="$emerge_list $tool"
-        if [ -d "/usr/portage/$tool" ]; then
+        tool_without_slot="`echo "$tool" | sed 's/:.*$//'`"
+        if [ -d "/usr/portage/$tool_without_slot" ]; then
             if [ "$use_changes" != "" ]; then
                 echo "$tool $use_changes" >> /etc/portage/package.use
             fi
@@ -160,8 +164,32 @@ if ! grep -qs "sys-fs/xfsprogs" <<< "$emerge_list"; then
     fi
 fi
 
-# 3) emerge
-emerge $emerge_list || exit 1
+# Special hack to not pull in sys-fs/eudev, if sys-fs/udev is in emerge_list.
+# Without that I got the following with auto-generated config from my workstation:
+#
+# * Error: The above package list contains packages which cannot be
+# * installed at the same time on the same system.
+#
+#  (sys-fs/udev-215-r1::gentoo, installed) pulled in by
+#    sys-fs/udev
+#    >=sys-fs/udev-208-r1 required by (virtual/udev-215::gentoo, installed)
+#    >=sys-fs/udev-208-r1:0/0[abi_x86_32(-)?,abi_x86_64(-)?,abi_x86_x32(-)?,abi_mips_n32(-)?,abi_mips_n64(-)?,abi_mips_o32(-)?,abi_ppc_32(-)?,abi_ppc_64(-)?,abi_s390_32(-)?,abi_s390_64(-)?,static-libs?] (>=sys-fs/udev-208-r1:0/0[abi_x86_64(-)]) required by (virtual/libudev-215-r1::gentoo, ebuild scheduled for merge)
+#
+#  (sys-fs/eudev-1.9-r2::gentoo, ebuild scheduled for merge) pulled in by
+#    >=sys-fs/eudev-1.5.3-r1:0/0[abi_x86_32(-)?,abi_x86_64(-)?,abi_x86_x32(-)?,abi_mips_n32(-)?,abi_mips_n64(-)?,abi_mips_o32(-)?,abi_ppc_32(-)?,abi_ppc_64(-)?,abi_s390_32(-)?,abi_s390_64(-)?,gudev,introspection?,static-libs?] (>=sys-fs/eudev-1.5.3-r1:0/0[abi_x86_64(-),gudev,introspection]) required by (virtual/libgudev-215-r1::gentoo, ebuild scheduled for merge)
+#
+if [[ "$emerge_list" =~ "sys-fs/udev" ]]; then
+    echo "sys-fs/eudev" >> /etc/portage/package.mask
+fi
+
+# 3) emerge SYSTEM_TOOLS, with auto-unmasking, if necessary
+emerge --autounmask-write --newuse --update $emerge_list 
+if ls /etc/portage/._cfg* >/dev/null 2>&1; then
+    etc-update --automode -5
+    emerge --newuse --update $emerge_list || exit 1
+fi
+
+# FixMe: need some 100% check that emerge haven't failed here.
 
 # 4) do specific things needed for each tool
 # FixMe: hardcoded currently, may make this nicer in future
