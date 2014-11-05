@@ -59,7 +59,9 @@ SYSTEM_TOOLS="
     app-editors/vim
     app-misc/mc
     app-misc/tmux
+    app-portage/gentoolkit
     app-portage/layman
+    dev-vcs/git
     mail-client/mailx
     mail-mta/ssmtp
     net-firewall/iptables
