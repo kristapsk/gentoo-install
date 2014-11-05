@@ -57,10 +57,7 @@ cd /usr/src/linux
 if [ -f /usr/src/use_kernel_config ]; then
     echo "------ Using prepared kernel configuration"
     cp /usr/src/use_kernel_config .config
-#    newconf_count=$((`make listnewconfig|wc -l`-1))
-#    if (( "$newconf_count" > "0" )); then
-#        seq 1 $newconf_count | while read line; do echo -en "\n"; done | make oldconfig
-#    fi
+    make olddefconfig
 else
 #    newconf_count=$((`make listnewconfig|wc -l`-1))
 #    if (( "$newconf_count" > "0" )); then
