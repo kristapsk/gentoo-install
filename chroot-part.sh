@@ -162,6 +162,8 @@ if ! grep -qs "sys-fs/xfsprogs" <<< "$emerge_list"; then
     fi
 fi
 
+# 3) do some hacks
+
 # Special hack to not pull in sys-fs/eudev, if sys-fs/udev is in emerge_list.
 # Without that I got the following with auto-generated config from my workstation:
 #
@@ -177,10 +179,24 @@ fi
 #    >=sys-fs/eudev-1.5.3-r1:0/0[abi_x86_32(-)?,abi_x86_64(-)?,abi_x86_x32(-)?,abi_mips_n32(-)?,abi_mips_n64(-)?,abi_mips_o32(-)?,abi_ppc_32(-)?,abi_ppc_64(-)?,abi_s390_32(-)?,abi_s390_64(-)?,gudev,introspection?,static-libs?] (>=sys-fs/eudev-1.5.3-r1:0/0[abi_x86_64(-),gudev,introspection]) required by (virtual/libgudev-215-r1::gentoo, ebuild scheduled for merge)
 #
 if [[ "$emerge_list" =~ "sys-fs/udev" ]]; then
+    echo "------ Masking eudev, to not have conflicts with udev" 
     echo "sys-fs/eudev" >> /etc/portage/package.mask
 fi
 
-# 3) emerge SYSTEM_TOOLS, with auto-unmasking, if necessary
+# Special re-emerge hack for USE="-bindist", which can cause conflicts like:
+#
+#  (dev-libs/openssl-1.0.1j::gentoo, ebuild scheduled for merge) pulled in by
+#    dev-libs/openssl:0[-bindist] required by (net-dns/bind-9.9.5-r3::gentoo, ebuild scheduled for merge)
+#
+#  (dev-libs/openssl-1.0.1j::gentoo, installed) pulled in by
+#    >=dev-libs/openssl-0.9.6d:0[bindist=] required by (net-misc/openssh-6.6_p1-r1::gentoo, installed)
+#
+if [[ "$USE" =~ "-bindist" ]] || grep -qs '\-bindist' /etc/portage/package.use; then
+    echo "------ Resolving bindist USE flag issues"
+    emerge --unmerge openssl openssh && emerge openssl openssh
+fi
+
+# 4) emerge SYSTEM_TOOLS, with auto-unmasking, if necessary
 emerge --autounmask-write --newuse --update $emerge_list 
 if ls /etc/portage/._cfg* >/dev/null 2>&1; then
     etc-update --automode -5
@@ -189,7 +205,7 @@ fi
 
 # FixMe: need some 100% check that emerge haven't failed here.
 
-# 4) do specific things needed for each tool
+# 5) do specific things needed for each tool
 # FixMe: hardcoded currently, may make this nicer in future
 
 if grep -qs "app-admin/syslog-ng" <<< "$emerge_list"; then
