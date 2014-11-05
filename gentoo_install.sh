@@ -123,10 +123,10 @@ mount -t proc proc /mnt/gentoo/proc
 mount --rbind /sys /mnt/gentoo/sys
 mount --rbind /dev /mnt/gentoo/dev
 
-chroot /mnt/gentoo /bin/bash /chroot-part.sh 
+# Be sure to always umount, if user presses Ctrl+C.
+# Two traps are needed to guard against executing commands twice.
+trap "umount -l /mnt/gentoo/dev; umount -l /mnt/gentoo/sys; umount -l /mnt/gentoo/proc" EXIT
+trap "exit 1" SIGINT SIGTERM
 
-umount -l /mnt/gentoo/dev
-umount -l /mnt/gentoo/sys
-umount -l /mnt/gentoo/proc
-
+chroot /mnt/gentoo /bin/bash /chroot-part.sh
 
