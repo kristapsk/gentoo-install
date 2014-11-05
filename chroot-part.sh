@@ -259,8 +259,13 @@ case $BOOTLOADER in
         #echo "root $rootgrub" >> /boot/grub/grub.conf
         echo "root (hd0,0)" >> /boot/grub/grub.conf
         echo "kernel /boot/kernel-$kernel_version-auto root=$rootpart" >> /boot/grub/grub.conf
-        
-        grub-install --no-floppy $bootdev
+
+        # Work around "/dev/xvda does not have any corresponding BIOS drive" error.
+        if [ "$bootdev" == "/dev/xvda" ]; then
+            echo -e "device (hd0) /dev/xvda\nroot (hd0,0)\nsetup (hd0)\nquit" | grub
+        else
+            grub-install --no-floppy $bootdev
+        fi
     ;;
     *)
         echo FATAL: Unknown bootloader: $BOOTLOADER
