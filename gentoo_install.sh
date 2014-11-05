@@ -110,7 +110,7 @@ echo --- Chrooting
 cp -L /etc/resolv.conf /mnt/gentoo/etc/
 
 cd - > /dev/null
-cp inc.config.sh /mnt/gentoo/
+cp inc.config.sh /mnt/gentoo/etc/
 # we remove first three lines which contains error message and exit, as guard
 # against direct launching of chroot-part script.
 tail -n+4 chroot-part.sh > /mnt/gentoo/chroot-part.sh

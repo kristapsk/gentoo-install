@@ -3,7 +3,7 @@ echo "Check README.txt and use gentoo_install.sh instead."
 exit
 
 . /etc/profile
-. inc.config.sh
+. /etc/inc.config.sh
 
 num_cores="`nproc`"
 
@@ -285,7 +285,7 @@ case $BOOTLOADER in
 esac
 
 echo "--- Cleanup"
-rm -f /stage3-*.tar.bz2 /chroot-part.sh /inc.config.sh /mounts.txt /use_dhcpcd.txt
+rm -f /stage3-*.tar.bz2 /chroot-part.sh /mounts.txt /use_dhcpcd.txt
 
 echo "--- All DONE, reboot to finish."
 
