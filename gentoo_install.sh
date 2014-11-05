@@ -29,8 +29,8 @@ if [ "$ROOT_PASSWORD" == "" ]; then
     exit 1
 fi
 
-if [ dmesg | grep -qs Xen ] && [ "$BOOTLOADER" != "grub-legacy" ]; then
-    echo "XenServer only supports GRUB legacy as BOOTLOADER for PV guests."
+if [ "`dmesg | grep Xen`" != "" ] && [ "$BOOTLOADER" != "grub-legacy" ]; then
+    echo "XenServer only supports GRUB legacy (grub-legacy) as BOOTLOADER for PV guests."
     exit 1
 fi
 
