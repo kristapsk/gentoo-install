@@ -49,13 +49,13 @@ tar xvjpf stage3-*.tar.bz2 || exit 1
 
 if dmesg | grep -qs Xen; then
     echo --- Creating Xen device nodes
-    mknod -m 600 /dev/hvc0 c 229 0
+    mknod -m 600 /mnt/gentoo/dev/hvc0 c 229 0
     # Create xvd* device nodes for all /dev/[sh]d[ab] devices, others not supported yet
-    mknod -m 660 /dev/xvda b 202 0
-    mknod -m 660 /dev/xvdb b 202 16
+    mknod -m 660 /mnt/gentoo/dev/xvda b 202 0
+    mknod -m 660 /mnt/gentoo/dev/xvdb b 202 16
     for i in `seq 1 15`; do
-        mknod -m 660 /dev/xvda$i b 202 $i
-        mknod -m 660 /dev/xvdb$i b 202 $((i + 16))
+        mknod -m 660 /mnt/gentoo/dev/xvda$i b 202 $i
+        mknod -m 660 /mnt/gentoo/dev/xvdb$i b 202 $((i + 16))
     done
 fi
 
