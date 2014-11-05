@@ -55,6 +55,7 @@ if [ "$KERNEL_EXTRA_FIRMWARE" != "" ]; then
 fi
 cd /usr/src/linux
 if [ -f /usr/src/use_kernel_config ]; then
+    echo "------ Using prepared kernel configuration"
     cp /usr/src/use_kernel_config .config
 #    newconf_count=$((`make listnewconfig|wc -l`-1))
 #    if (( "$newconf_count" > "0" )); then
