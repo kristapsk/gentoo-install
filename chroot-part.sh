@@ -270,8 +270,23 @@ case $BOOTLOADER in
     ;;
 esac
 
+if dmesg | grep -qs Xen; then
+    echo "--- Configuring Xen PV guest"
+
+    sed -i 's/^c[2-9]:/#&/g' /etc/inittab
+    sed -i 's/agetty 38400 tty1 linux/agetty 38400 hvc0 linux/' /etc/inittab
+
+    printf "\nhvc0\n" >> /etc/securetty
+    printf "\nhvc0\t\troot:tty 666\n" >> /etc/mdev.conf
+    sed -i -e 's/#*rc_sys=""/rc_sys="xenU"/' /etc/rc.conf
+fi
+
 echo "--- Cleanup"
 rm -f /stage3-*.tar.bz2 /chroot-part.sh /inc.config.sh /mounts.txt /use_dhcpcd.txt
 
-echo "--- All DONE, reboot to finish."
+if dmesg | grep -qs Xen; then
+    echo "--- All DONE, shutdown VM, switch from HVM-mode to PV-mode and restart."
+else
+    echo "--- All DONE, reboot to finish."
+fi
 
