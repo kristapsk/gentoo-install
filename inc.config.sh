@@ -38,6 +38,8 @@ KERNEL_EBUILD="hardened-sources"
 USE_KERNEL_CONFIG=""
 # Specify kernel binary blob ebuilds here, if needed.
 KERNEL_EXTRA_FIRMWARE=""
+# Optionally specify additional kernel command line arguments.
+ADDITIONAL_KERNEL_ARGS=""
 
 TARGET_HOSTNAME="tux-box"
 

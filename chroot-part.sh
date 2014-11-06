@@ -86,6 +86,13 @@ echo --- Configuring Networking
 echo "hostname=\"$TARGET_HOSTNAME\"" > /etc/conf.d/hostname
 emerge --noreplace netifrc
 net_iface="`route -n | grep "^0.0.0.0" | sed 's/\s\+/\t/g' | cut -f 8`"
+
+# If LiveCD has classic ethX network interface name, make sure that udev in
+# installed system will not rename it.
+if grep -qs "^eth" <<< "$net_iface"; then
+    ADDITIONAL_KERNEL_ARGS="`echo "$ADDITIONAL_KERNEL_ARGS"` net.ifnames=0"
+fi
+
 if [ "`cat /use_dhcpcd.txt`" == "1" ]; then
     echo "config_$net_iface=\"dhcp\"" >> /etc/conf.d/net
     needs_dhcpcd=1
@@ -274,7 +281,7 @@ case $BOOTLOADER in
         # FixMe: fix auto-detecting of /boot partition
         #echo "root $rootgrub" >> /boot/grub/grub.conf
         echo "root (hd0,0)" >> /boot/grub/grub.conf
-        echo "kernel /boot/kernel-$kernel_version-auto root=$rootpart" >> /boot/grub/grub.conf
+        echo "kernel /boot/kernel-$kernel_version-auto root=$rootpart $ADDITIONAL_KERNEL_ARGS" >> /boot/grub/grub.conf
 
         # Work around "/dev/xvda does not have any corresponding BIOS drive" error.
         if [ "$bootdev" == "/dev/xvda" ]; then
