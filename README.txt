@@ -7,8 +7,6 @@ Fast HOWTO:
 * Run gentoo_install.sh
 
 Known issues:
-* No support for guessing new style Linux network interface names, if booted
-from old Gentoo LiveCD with ethXX style names
 * No IPv6 support
 * No LILO support (I will not implement it, do it yourself, if you need)
 * Only amd64 / x86 supported for now (feel free to implement others)
