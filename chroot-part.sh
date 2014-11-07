@@ -72,6 +72,12 @@ make -j$((num_cores + 1))
 make modules_install
 cp arch/x86/boot/bzImage /boot/kernel-$kernel_version-auto || exit 1
 
+# Do we have XEN PVHVM xvd block device support in kernel?
+if grep -qs "CONFIG_XEN_PVHVM=y" .config && grep -qs "CONFIG_XEN_BLKDEV_FRONTEND=y" .config; then
+    XEN_BLKDEV="1"
+else
+    XEN_BLKDEV="0"
+fi
 
 echo --- Configuring Filesystems
 
@@ -79,7 +85,9 @@ echo --- Configuring Filesystems
 sed -i 's/^[^#]/#&/g' /etc/fstab
 # add our mounts at the end of the file
 cat /mounts.txt | sed 's/\/mnt\/gentoo\s/\/ /g' | sed 's/\/mnt\/gentoo//g' >> /etc/fstab
-
+if [ "$XEN_BLKDEV" != "1" ]; then
+    sed -i 's/xvd/sd/g' /etc/fstab
+fi
 
 echo --- Configuring Networking
 
