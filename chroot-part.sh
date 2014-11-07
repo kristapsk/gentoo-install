@@ -281,6 +281,9 @@ case $BOOTLOADER in
 
         rootgrub="`grep $bootdev < /boot/grub/device.map | cut -f 1`"
         rootpart="`grep "\s/mnt/gentoo\s" /mounts.txt | cut -d ' ' -f 1`"
+        if [ "$XEN_BLKDEV" != "1" ]; then
+            rootpart="`echo "$rootpart" | sed 's/\/dev\/xvd/\/dev\/sd/g'`"
+        fi
 
         echo "default 0" > /boot/grub/grub.conf
         echo "timeout 5" >> /boot/grub/grub.conf
