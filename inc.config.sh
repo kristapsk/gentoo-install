@@ -29,7 +29,7 @@ LOCALES="
     lv_LV ISO-8859-13
     lv_LV.UTF-8 UTF-8
 "
-DEFAULT_LOCALE="lv_LV.UTF-8"
+DEFAULT_LOCALE="POSIX"
 
 # Leave blank for default
 KERNEL_EBUILD="hardened-sources"
