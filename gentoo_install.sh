@@ -44,7 +44,9 @@ echo === Installing Gentoo GNU/Linux for $GENTOO_ARCH
 
 cd /mnt/gentoo
 rm -f stage3-*.tar.bz2
-wget "$GENTOO_MIRROR/releases/$GENTOO_ARCH/current-iso/stage3-$GENTOO_SUBARCH-????????.tar.bz2" || exit 1
+while true; do
+    wget "$GENTOO_MIRROR/releases/$GENTOO_ARCH/current-iso/stage3-$GENTOO_SUBARCH-????????.tar.bz2" && break
+done
 tar xvjpf stage3-*.tar.bz2 || exit 1
 
 if dmesg | grep -qs Xen; then
