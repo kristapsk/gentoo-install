@@ -116,7 +116,9 @@ cd /etc/init.d
 ln -s net.lo net.$net_iface
 rc-update add net.$net_iface default
 cd - > /dev/null
-sed -i "s/127\.0\.0\.1\s\+localhost/127\.0\.0\.1\t$TARGET_HOSTNAME localhost/" /etc/hosts
+# Resolve auto generated hostname for hosts file, if specified.
+real_hostname="`eval echo "$TARGET_HOSTNAME"`"
+sed -i "s/127\.0\.0\.1\s\+localhost/127\.0\.0\.1\t$real_hostname localhost/" /etc/hosts
 
 
 echo --- Setting root password

@@ -41,7 +41,11 @@ KERNEL_EXTRA_FIRMWARE=""
 # Optionally specify additional kernel command line arguments.
 ADDITIONAL_KERNEL_ARGS=""
 
-TARGET_HOSTNAME="tux-box"
+# Default to auto generated hostname, by applying MAC address to it.
+# Might be useful when installing VM templates.
+TARGET_HOSTNAME="tux-box-\`ifconfig -a | grep ether | head -n 1 | sed 's/\s\+/\t/g' | cut -f 3 | sed 's/://g'\`"
+# Use the following instead for a simple static hostname.
+#TARGET_HOSTNAME="tux-box"
 
 ROOT_PASSWORD="somepass"
 
