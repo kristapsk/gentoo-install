@@ -69,9 +69,6 @@ sed -i "s/CFLAGS=.*/CFLAGS=\"$CFLAGS\"/" $make_conf
 sed -i "s/USE=.*/USE=\"$USE\"/" $make_conf
 num_cores="`nproc`"
 echo "MAKEOPTS=\"-j$((num_cores + 1))\"" >> $make_conf
-if [ "$SYNC" != "" ]; then
-    echo "SYNC=\"$SYNC\"" >> $make_conf
-fi
 if [ "$INPUT_DEVICES" != "" ]; then
     echo "INPUT_DEVICES=\"$INPUT_DEVICES\"" >> $make_conf
 fi

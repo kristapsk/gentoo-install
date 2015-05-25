@@ -6,8 +6,6 @@ USE="bindist mmx sse sse2 -X vim-syntax"
 
 # optional make.conf settings (leave blank for defaults)
 
-SYNC=""
-
 INPUT_DEVICES=""
 VIDEO_CARDS=""
 LINGUAS=""
