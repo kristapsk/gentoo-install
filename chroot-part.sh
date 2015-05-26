@@ -7,6 +7,9 @@ exit
 
 num_cores="`nproc`"
 
+# Be sure, we have directory versions, not single file.
+mkdir /etc/portage/package.use
+mkdir /etc/portage/package.mask
 
 echo --- Configuring Portage
 
@@ -143,7 +146,7 @@ while read tool_line; do
         tool_without_slot="`echo "$tool" | sed 's/:.*$//'`"
         if [ -d "/usr/portage/$tool_without_slot" ]; then
             if [ "$use_changes" != "" ]; then
-                echo "$tool $use_changes" >> /etc/portage/package.use
+                echo "$tool $use_changes" >> /etc/portage/package.use/gentoo-install
             fi
         else
             echo "Unknown / non-existing required package: $tool, aborting."
@@ -197,7 +200,7 @@ fi
 #
 if [[ "$emerge_list" =~ "sys-fs/udev" ]]; then
     echo "------ Masking eudev, to not have conflicts with udev" 
-    echo "sys-fs/eudev" >> /etc/portage/package.mask
+    echo "sys-fs/eudev" >> /etc/portage/package.mask/gentoo-install
 fi
 
 # Special re-emerge hack for USE="-bindist", which can cause conflicts like:
@@ -208,7 +211,7 @@ fi
 #  (dev-libs/openssl-1.0.1j::gentoo, installed) pulled in by
 #    >=dev-libs/openssl-0.9.6d:0[bindist=] required by (net-misc/openssh-6.6_p1-r1::gentoo, installed)
 #
-if [[ "$USE" =~ "-bindist" ]] || grep -qs '\-bindist' /etc/portage/package.use; then
+if [[ "$USE" =~ "-bindist" ]] || grep -qs '\-bindist' /etc/portage/package.use/*; then
     echo "------ Resolving bindist USE flag issues"
     emerge --unmerge openssl openssh && emerge openssl openssh
 fi
@@ -278,8 +281,11 @@ case $BOOTLOADER in
     grub-legacy)
         echo ------ Using GRUB Legacy
         
-        echo ">=sys-boot/grub-2" >> /etc/portage/package.mask
-        emerge sys-boot/grub:0
+        echo ">=sys-boot/grub-2" >> /etc/portage/package.mask/grub
+        if [ "`uname -m`" == "x86_64" ]; then
+            echo "sys-libs/ncurses abi_x86_32" >> /etc/portage/package.use/gentoo-install
+        fi
+        emerge sys-boot/grub:0 || exit 1
 
         rootgrub="`grep $bootdev < /boot/grub/device.map | cut -f 1`"
         rootpart="`grep "\s/mnt/gentoo\s" /mounts.txt | cut -d ' ' -f 1`"
