@@ -88,6 +88,11 @@ echo --- Configuring Filesystems
 sed -i 's/^[^#]/#&/g' /etc/fstab
 # add our mounts at the end of the file
 cat /mounts.txt | sed 's/\/mnt\/gentoo\s/\/ /g' | sed 's/\/mnt\/gentoo//g' >> /etc/fstab
+# add swaps
+swapon -s | tail -n -1 | cut -f 1 | while read swap_line; do
+    echo -e "$swap_line\t\tnone\t\tswap\t\tsw\t\t0 0" >> /etc/fstab
+done
+# XEN block device name fix
 if [ "$XEN_BLKDEV" != "1" ]; then
     sed -i 's/\/dev\/xvd/\/dev\/sd/g' /etc/fstab
 fi
