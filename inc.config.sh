@@ -29,6 +29,9 @@ LOCALES="
 "
 DEFAULT_LOCALE="POSIX"
 
+# Environment
+#DEFAULT_EDITOR="/usr/bin/vi"
+
 # Leave blank for default
 KERNEL_EBUILD="hardened-sources"
 # You can specify kernel .config file name (absolute/relative path prior

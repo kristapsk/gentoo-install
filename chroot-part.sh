@@ -261,6 +261,13 @@ if grep -qs "app-portage/layman" <<< "$emerge_list"; then
     echo "source /var/lib/layman/make.conf" >> /etc/portage/make.conf
 fi
 
+echo --- Configuring the Environment
+
+if [ "$DEFAULT_EDITOR" != "" ]; then
+    eselect editor set "$DEFAULT_EDITOR"
+    . /etc/profile
+fi
+
 echo --- Configuring the Bootloader
 
 grep -v rootfs /proc/mounts > /etc/mtab
