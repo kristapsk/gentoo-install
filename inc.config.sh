@@ -72,7 +72,7 @@ SYSTEM_TOOLS="
     mail-client/mailx
     mail-mta/ssmtp
     net-firewall/iptables
-    net-misc/ntp[openntpd]
+    net-misc/ntp
     net-misc/telnet-bsd
     sys-apps/mlocate
     sys-block/parted
