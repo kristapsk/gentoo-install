@@ -69,7 +69,7 @@ SYSTEM_TOOLS="
     app-portage/gentoolkit
     app-portage/layman
     dev-vcs/git
-    mail-client/mailx
+    mail-client/nail
     mail-mta/ssmtp
     net-firewall/iptables
     net-misc/ntp
