@@ -46,7 +46,7 @@ copy_from_make_conf_optional NGINX_MODULES_MAIL "$outfile"
 copy_from_make_conf_optional QEMU_SOFTMMU_TARGETS "$outfile"
 copy_from_make_conf_optional QEMU_USER_TARGETS "$outfile"
 
-echo "SYSTEM_PROFILE=\"`eselect profile show | tail -n+2 | head -n -1 | sed -e 's/^ *//' -e 's/ *$//'`\"" >> "$outfile"
+echo "SYSTEM_PROFILE=\"`eselect profile show | tail -n+2 | sed -e 's/^ *//' -e 's/ *$//'`\"" >> "$outfile"
 
 echo "TIMEZONE=\"`cat /etc/timezone`\"" >> "$outfile"
 
@@ -55,7 +55,7 @@ grep -v '^#' /etc/locale.gen | grep -v '^$' | sed 's/^/\t/' >> "$outfile"
 echo "\"" >> $outfile
 echo "DEFAULT_LOCALE=\"$LANG\"" >> "$outfile"
 
-kernel_dir="`eselect kernel show | tail -n+2 | head -n -1 | sed -e 's/^ *//' -e 's/ *$//'`"
+kernel_dir="`eselect kernel show | tail -n+2 | sed -e 's/^ *//' -e 's/ *$//'`"
 echo "KERNEL_EBUILD=\"`qfile -C "$kernel_dir" | cut -d ' ' -f 1`\"" >> "$outfile"
 KERNEL_EXTRA_FIRMWARE=""
 if [ -f "$kernel_dir/.config" ]; then
