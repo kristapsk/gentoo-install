@@ -11,6 +11,14 @@ if [ ! -f /etc/portage/make.conf ]; then
     exit 1
 fi
 
+lockdir=/tmp/config_gen.lock
+if mkdir "$lockdir" 2> /dev/null ; then
+    trap 'rm -rf "$lockdir"' 0
+    trap "exit 2" 1 2 3 15
+else
+    exit 0
+fi
+
 outfile="$1"
 
 copy_from_make_conf_required() {
@@ -70,6 +78,15 @@ else
     echo "USE_KERNEL_CONFIG=\"\"" >> "$outfile"
 fi
 echo "KERNEL_EXTRA_FIRMWARE=\"$KERNEL_EXTRA_FIRMWARE\"" >> "$outfile"
+SYSCTL_ALL="`sysctl -a`"
+SYSCTL_SYSTEM="`sysctl --system | grep -v "* Applying" | sed -e 's/^/\\t/'`"
+echo "SYSCTL_CONF=\"" >> "$outfile"
+echo "$SYSCTL_SYSTEM" | while read sysctl_line; do
+    if grep -qs "$sysctl_line" <<< "$SYSCTL_ALL"; then
+        echo -e "\t$sysctl_line" >> "$outfile"
+    fi
+done
+echo "\"" >> "$outfile"
 
 # Overlays are not yet handled, so we add only packages from default repository.
 # FixMe: does not handle properly same package name installed in multiple slots yet.

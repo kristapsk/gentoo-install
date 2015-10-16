@@ -134,6 +134,11 @@ echo --- Setting root password
 echo -e "$ROOT_PASSWORD\n$ROOT_PASSWORD\n" | passwd
 
 
+echo --- sysctl
+echo "$SYSCTL_CONF" | while read sysctl_conf_line; do
+    echo "$sysctl_conf_line" | sed -s 's/\t//' >> /etc/sysctl.d/gentoo-install.conf
+done
+
 echo --- Installing Necessary System Tools
 
 # 1) check package names and set use flags if needed

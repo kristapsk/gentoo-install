@@ -41,6 +41,10 @@ USE_KERNEL_CONFIG=""
 KERNEL_EXTRA_FIRMWARE=""
 # Optionally specify additional kernel command line arguments.
 ADDITIONAL_KERNEL_ARGS=""
+# Optional sysctl custom values
+SYSCTL_CONF="
+    net.ipv4.tcp_syncookies = 1
+"
 
 # Default to auto generated hostname, by applying MAC address to it.
 # Might be useful when installing VM templates.
