@@ -86,5 +86,5 @@ SYSTEM_TOOLS="
 "
 
 # Supported bootloaders: grub2, grub-legacy
-BOOTLOADER="grub2"
+BOOTLOADER="grub-legacy"
 
