@@ -8,8 +8,8 @@ exit
 num_cores="`nproc`"
 
 # Be sure, we have directory versions, not single file.
-mkdir /etc/portage/package.use
-mkdir /etc/portage/package.mask
+mkdir -p /etc/portage/package.use
+mkdir -p /etc/portage/package.mask
 
 echo --- Configuring Portage
 
