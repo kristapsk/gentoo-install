@@ -332,6 +332,19 @@ case $BOOTLOADER in
     ;;
 esac
 
+if [ "$USER_LOGIN" != "" ]; then
+    echo "--- Adding user"
+    if [ "$USER_GROUPS" == "" ]; then
+        USER_GRUPS="users"
+    fi
+    useradd -m -G $USER_GROUPS -s /bin/bash $USER_LOGIN
+    echo -e "$USER_PASSWORD\n$USER_PASSWORD\n" | passwd $USER_LOGIN
+fi
+
+if [ "$SUDO_WHEEL_ALL" != "" ]; then
+    echo '%wheel ALL=(ALL) ALL' >> /etc/sudoers
+fi
+
 echo "--- Cleanup"
 rm -f /stage3-*.tar.bz2 /chroot-part.sh /mounts.txt /use_dhcpcd.txt
 

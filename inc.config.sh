@@ -54,6 +54,13 @@ TARGET_HOSTNAME="tux-box-\`ifconfig -a | grep ether | head -n 1 | sed 's/\s\+/\t
 
 ROOT_PASSWORD="somepass"
 
+USER_LOGIN="larry"
+USER_PASSWORD="somepass"
+USER_GROUPS="users,wheel"
+
+# Allow members of wheel group to execute any command using sudo. Change to empty string to disable.
+SUDO_WHEEL_ALL="1"
+
 # Necessary system tools to emerge
 # Specific USE flag changes can be specified in square brackets
 # Additionally, the following ones will be always emerged under certain
