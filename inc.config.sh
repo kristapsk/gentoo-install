@@ -67,6 +67,7 @@ SUDO_WHEEL_ALL="1"
 # circumstances:
 #   * net-misc/dhcpcd - if network configured via DHCP
 #   * sys-fs/jfsutils - if JFS partition(s) detected
+#   * sys-fs/mdadm - if active software RAID devices detected
 #   * sys-fs/reiserfsprogs - if ReiserFS partition(s) detected
 #   * sys-fs/xfsprogs - if XFS partition(s) detected
 SYSTEM_TOOLS="

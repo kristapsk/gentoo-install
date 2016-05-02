@@ -181,6 +181,11 @@ if ! grep -qs "sys-fs/jfsutils" <<< "$emerge_list"; then
         emerge_list="$emerge_list sys-fs/jfsutils"
     fi
 fi
+if ! grep -qs "sys-fs/mdadm" <<< "$emerge_list"; then
+    if grep -qs "active" < /proc/mdstat; then
+        emerge_list="$emerge_list sys-fs/mdadm"
+    fi
+fi
 if ! grep -qs "sys-fs/reiserfsprogs" <<< "$emerge_list"; then
     if grep -qs "reiserfs" < /proc/mounts; then
         emerge_list="$emerge_list sys-fs/reiserfsprogs"
@@ -263,6 +268,10 @@ fi
 
 if grep -qs "net-misc/ntp" <<< "$emerge_list"; then
     rc-update add ntpd default
+fi
+
+if grep -qs "sys-fs/mdadm" <<< "$emerge_list"; then
+    rc-update add mdraid boot
 fi
 
 rc-update add sshd default
