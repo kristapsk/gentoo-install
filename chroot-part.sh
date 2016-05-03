@@ -336,6 +336,10 @@ case $BOOTLOADER in
         emerge sys-boot/grub:0 || exit 1
 
         rootpart="`grep "\s/\s" /etc/fstab | grep -v "^#" | cut -f 1`"
+        # I had problems with root=UUID=..., let's not use it for now.
+        if grep -qs "^UUID=" <<< "$rootpart"; then
+            rootpart=$(blkid -U $(sed 's/UUID=//' <<< "$rootpart"))
+        fi
 
         echo "default 0" > /boot/grub/grub.conf
         echo "timeout 5" >> /boot/grub/grub.conf
