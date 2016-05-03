@@ -327,7 +327,7 @@ case $BOOTLOADER in
         echo ------ Using GRUB2
         emerge sys-boot/grub
         echo "$bootdevs" | while read bootdev; do
-            grub2-install $bootdev
+            grub2-install /dev/$bootdev
         done
         grub2-mkconfig -o /boot/grub/grub.cfg
     ;;
@@ -357,10 +357,10 @@ case $BOOTLOADER in
 
         echo "$bootdevs" | while read bootdev; do
             # Work around "/dev/xvda does not have any corresponding BIOS drive" error.
-            if [ "$bootdev" == "/dev/xvda" ]; then
+            if [ "$bootdev" == "xvda" ]; then
                 echo -e "device (hd0) /dev/xvda\nroot (hd0,0)\nsetup (hd0)\nquit" | grub
             else
-                grub-install --no-floppy $bootdev
+                grub-install --no-floppy /dev/$bootdev || echo "grub-install on \"/dev/$bootdev\" failed!"
             fi
         done
     ;;
