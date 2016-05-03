@@ -62,13 +62,8 @@ if [ -f /usr/src/use_kernel_config ]; then
     cp /usr/src/use_kernel_config .config
     make olddefconfig
 else
-#    newconf_count=$((`make listnewconfig|wc -l`-1))
-#    if (( "$newconf_count" > "0" )); then
-#        # Just hit Enter for each new config parameter and use default values.
-#        seq 1 $((`make listnewconfig|wc -l`-1)) | while read line; do echo -en "\n"; done | make localyesconfig
-#    else
-        make localyesconfig
-#    fi
+    make olddefconfig
+    make localyesconfig
 fi
 kernel_version="`make kernelversion`"
 make -j$((num_cores + 1))
