@@ -67,8 +67,16 @@ make_conf="/mnt/gentoo/etc/portage/make.conf"
 cp $make_conf ${make_conf}.dist
 sed -i "s/CFLAGS=.*/CFLAGS=\"$CFLAGS\"/" $make_conf
 sed -i "s/USE=.*/USE=\"$USE\"/" $make_conf
+
+if [ "$GENTOO_ARCH" == "amd64" ] || [ "$GENTOO_ARCH" == "x86" ]; then
+    if [ "$CPU_FLAGS_X86" != "" ]; then
+        echo "CPU_FLAGS_X86=\"$CPU_FLAGS_X86\"" >> $make_conf
+    fi
+fi
+
 num_cores="`nproc`"
 echo "MAKEOPTS=\"-j$((num_cores + 1))\"" >> $make_conf
+
 if [ "$INPUT_DEVICES" != "" ]; then
     echo "INPUT_DEVICES=\"$INPUT_DEVICES\"" >> $make_conf
 fi
