@@ -87,15 +87,38 @@ echo --- Configuring Filesystems
 # comment out all non-blank lines which are not yet commented out
 sed -i 's/^[^#]/#&/g' /etc/fstab
 # add our mounts at the end of the file
-cat /mounts.txt | sed 's/\/mnt\/gentoo\s/\/ /g' | sed 's/\/mnt\/gentoo//g' >> /etc/fstab
+fstab_format="%s\t%-22s\t%-7s\t%-50s\t%s"
+cat /mounts.txt | while read fs mountpoint type opts dump pass; do
+    if [ "$mountpoint" == "/mnt/gentoo" ]; then
+        mountpoint="/"
+    else
+        mountpoint="`sed 's/\/mnt\/gentoo//g' <<< "$mountpoint"`"
+    fi
+    if [ "$mountpoint" == "/boot" ]; then
+        opts="noauto,$opts"
+        dump="1"
+        pass="2"
+    elif [ "$mountpoint" == "/" ]; then
+        dump="0"
+        pass="1"
+    else
+        dump="0"
+        pass="0"
+    fi
+    # Remove generic defaults
+    opts="`echo "$opts" | sed -r 's/rw,?//'`"
+    # Remove filesystem specific defaults
+    if [ "$type" == "ext4" ]; then
+        opts="`echo "$opts" | sed -r 's/data=ordered,?//'`"
+    fi
+    # Remove trailing comma, if present
+    opts=${opts%,}
+    printf "$fstab_format\n" "UUID=`lsblk -no UUID $fs`" "$mountpoint" "$type" "$opts" "$dump $pass" >> /etc/fstab
+done
 # add swaps
 swapon -s | tail -n -1 | cut -f 1 | while read swap_line; do
-    echo -e "$swap_line\t\tnone\t\tswap\t\tsw\t\t0 0" >> /etc/fstab
+    printf "$fstab_format\n" "UUID=`lsblk -no UUID $swap_line`" "none" "swap" "sw" "0 0" >> /etc/fstab
 done
-# XEN block device name fix
-if [ "$XEN_BLKDEV" != "1" ]; then
-    sed -i 's/\/dev\/xvd/\/dev\/sd/g' /etc/fstab
-fi
 
 echo --- Configuring Networking
 
