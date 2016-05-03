@@ -340,11 +340,7 @@ case $BOOTLOADER in
         fi
         emerge sys-boot/grub:0 || exit 1
 
-        rootgrub="`grep $bootdev < /boot/grub/device.map | cut -f 1`"
-        rootpart="`grep "\s/mnt/gentoo\s" /mounts.txt | cut -d ' ' -f 1`"
-        if [ "$XEN_BLKDEV" != "1" ]; then
-            rootpart="`echo "$rootpart" | sed 's/\/dev\/xvd/\/dev\/sd/g'`"
-        fi
+        rootpart="`grep "\s/\s" /etc/fstab | grep -v "^#" | cut -f 1`"
 
         echo "default 0" > /boot/grub/grub.conf
         echo "timeout 5" >> /boot/grub/grub.conf
