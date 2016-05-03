@@ -291,8 +291,10 @@ echo --- Configuring the Bootloader
 
 grep -v rootfs /proc/mounts > /etc/mtab
 bootpart="`df /boot | tail -n 1 | sed 's/\s\+/\t/g' | cut -f 1`"
-bootdev="/dev/`lsblk -is $bootpart -o NAME | tail -n+3 | perl -pe 's/^([^A-Za-z0-9_]+)/length($1)."\t"/ge' | sort -nsr | cut -f 2 | tr '\!' '/'`"
-
+bootdevs="`lsblk -is $bootpart -o NAME | tail -n+2`"
+while grep -qs "^[^A-Za-z0-9_]" <<< "$bootdevs"; do
+    bootdevs="`grep "^[^a-zA-Z0-9_]" <<< "$bootdevs" | cut -c 2-`"
+done
 
 if [ "$BOOTLOADER" == "" ]; then
     BOOTLOADER=grub2
@@ -301,7 +303,9 @@ case $BOOTLOADER in
     grub2)
         echo ------ Using GRUB2
         emerge sys-boot/grub
-        grub2-install $bootdev
+        echo "$bootdevs" | while read bootdev; do
+            grub2-install $bootdev
+        done
         grub2-mkconfig -o /boot/grub/grub.cfg
     ;;
     grub-legacy)
@@ -328,12 +332,14 @@ case $BOOTLOADER in
         echo "root (hd0,0)" >> /boot/grub/grub.conf
         echo "kernel /boot/kernel-$kernel_version-auto root=$rootpart $ADDITIONAL_KERNEL_ARGS" >> /boot/grub/grub.conf
 
-        # Work around "/dev/xvda does not have any corresponding BIOS drive" error.
-        if [ "$bootdev" == "/dev/xvda" ]; then
-            echo -e "device (hd0) /dev/xvda\nroot (hd0,0)\nsetup (hd0)\nquit" | grub
-        else
-            grub-install --no-floppy $bootdev
-        fi
+        echo "$bootdevs" | while read bootdev; do
+            # Work around "/dev/xvda does not have any corresponding BIOS drive" error.
+            if [ "$bootdev" == "/dev/xvda" ]; then
+                echo -e "device (hd0) /dev/xvda\nroot (hd0,0)\nsetup (hd0)\nquit" | grub
+            else
+                grub-install --no-floppy $bootdev
+            fi
+        done
     ;;
     *)
         echo FATAL: Unknown bootloader: $BOOTLOADER
