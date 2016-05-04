@@ -344,12 +344,7 @@ case $BOOTLOADER in
         echo "kernel /boot/kernel-$kernel_version-auto root=$rootpart $ADDITIONAL_KERNEL_ARGS" >> /boot/grub/grub.conf
 
         echo "$bootdevs" | while read bootdev; do
-            # Work around "/dev/xvda does not have any corresponding BIOS drive" error.
-            if [ "$bootdev" == "xvda" ]; then
-                echo -e "device (hd0) /dev/xvda\nroot (hd0,0)\nsetup (hd0)\nquit" | grub
-            else
-                grub-install --no-floppy /dev/$bootdev || echo "grub-install on \"/dev/$bootdev\" failed!"
-            fi
+            echo -e "device (hd0) /dev/$bootdev\nroot (hd0,0)\nsetup (hd0)\nquit" | grub
         done
     ;;
     *)
