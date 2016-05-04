@@ -70,13 +70,6 @@ make -j$((num_cores + 1))
 make modules_install
 cp arch/x86/boot/bzImage /boot/kernel-$kernel_version-auto || exit 1
 
-# Do we have XEN PVHVM xvd block device support in kernel?
-if grep -qs "CONFIG_XEN_PVHVM=y" .config && grep -qs "CONFIG_XEN_BLKDEV_FRONTEND=y" .config; then
-    XEN_BLKDEV="1"
-else
-    XEN_BLKDEV="0"
-fi
-
 echo --- Configuring Filesystems
 
 # comment out all non-blank lines which are not yet commented out
