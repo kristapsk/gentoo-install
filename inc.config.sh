@@ -38,6 +38,11 @@ KERNEL_EBUILD="hardened-sources"
 # You can specify kernel .config file name (absolute/relative path prior
 # chrooting). If left blank, "make localyesconfig" is used.
 USE_KERNEL_CONFIG=""
+# Here you can specify additional kernel config's to enable or disable.
+# Format is CONFIG_OPTION=<y|n|m>, separated by a newline.
+ADDITIONAL_KERNEL_CONFIG="
+    CONFIG_SYN_COOKIES=y
+"
 # Specify kernel binary blob ebuilds here, if needed.
 KERNEL_EXTRA_FIRMWARE=""
 # Optionally specify additional kernel command line arguments.

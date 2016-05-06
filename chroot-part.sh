@@ -65,6 +65,21 @@ else
     make olddefconfig
     make localyesconfig
 fi
+echo "$ADDITIONAL_KERNEL_CONFIG" | while read kernel_config; do
+    # remove whitespaces
+    kernel_config="`xargs <<< "$kernel_config"`"
+    if [ "$kernel_config" != "" ]; then
+        kernel_config_key="${kernel_config::-2}"
+        if [ "${kernel_config:-2}" == "=n" ]; then
+            replace_line="# $kernel_config_key is not set"
+        else
+            replace_line="$kernel_config"
+        fi
+        sed -i "s/.*$kernel_config_key.*/$replace_line/" .config
+    fi
+done
+# May be required to enable dependencies of ADDITIONAL_KERNEL_CONFIG
+make olddefconfig
 kernel_version="`make kernelversion`"
 make -j$((num_cores + 1))
 make modules_install
