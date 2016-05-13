@@ -13,6 +13,5 @@ Known issues:
 * Missing configuration of /etc/rc.conf, /etc/conf.d/keymaps,
 /etc/conf.d/hwclock, /etc/inittab, ...
 * PPPoE client (net-dialup/ppp) is not detected and installed automatically
-* You may need to manually press some Enter's during kernel's configuration.
 * If using GRUB Legacy, boot partition must be "(hd0,0)".
 
