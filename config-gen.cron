@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# cd /root/
+# git clone https://github.com/kristapsk/gentoo-install.git
+# cd /etc/cron.daily/
+# ln -s /opt/gentoo-install/config-gen.cron config-gen
+
+CONFIG_OUT=/etc/inc.config.sh
+bash /opt/gentoo-install/config-gen.sh $CONFIG_OUT > /dev/null
+eval "`grep USE_KERNEL_CONFIG $CONFIG_OUT`" && cp $USE_KERNEL_CONFIG /etc/kernel-config
+chmod 600 $CONFIG_OUT /etc/kernel-config

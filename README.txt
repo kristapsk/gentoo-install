@@ -4,7 +4,7 @@ Fast HOWTO:
 * Configure network
 * Make partitions, format, mount them as /mnt/gentoo
 * Check configuration inc.config.sh
-* Run gentoo_install.sh
+* Run gentoo-install.sh
 
 Known issues:
 * No IPv6 support
