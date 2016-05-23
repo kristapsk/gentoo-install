@@ -77,6 +77,9 @@ fi
 num_cores="`nproc`"
 echo "MAKEOPTS=\"-j$((num_cores + 1))\"" >> $make_conf
 
+if [ "$FEATURES" != "" ]; then
+    echo "FEATURES=\"$FEATURES\"" >> $make_conf
+fi
 if [ "$INPUT_DEVICES" != "" ]; then
     echo "INPUT_DEVICES=\"$INPUT_DEVICES\"" >> $make_conf
 fi

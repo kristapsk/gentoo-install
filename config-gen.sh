@@ -45,6 +45,7 @@ echo >> "$outfile"
 echo "GENTOO_MIRROR=\"ftp://distfiles.gentoo.org\"" >> "$outfile"
 copy_from_make_conf_required CFLAGS "$outfile" || exit 1
 copy_from_make_conf_required USE "$outfile" || exit 1
+copy_from_make_conf_optional FEATURES "$outfile"
 copy_from_make_conf_optional CPU_FLAGS_X86 "$outfile"
 copy_from_make_conf_optional INPUT_DEVICES "$outfile"
 copy_from_make_conf_optional VIDEO_CARDS "$outfile"

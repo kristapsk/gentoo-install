@@ -5,6 +5,7 @@ CFLAGS="-march=native -O2 -pipe"
 USE="bindist mmx sse sse2 -X vim-syntax"
 
 # optional make.conf settings (leave blank for defaults)
+FEATURES="preserve-libs"
 CPU_FLAGS_X86="mmx sse sse2"
 INPUT_DEVICES=""
 VIDEO_CARDS=""
