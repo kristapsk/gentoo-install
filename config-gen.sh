@@ -85,7 +85,8 @@ else
     echo "USE_KERNEL_CONFIG=\"\"" >> "$outfile"
 fi
 echo "KERNEL_EXTRA_FIRMWARE=\"$KERNEL_EXTRA_FIRMWARE\"" >> "$outfile"
-SYSCTL_ALL="`sysctl -a`"
+# Don't output error on not having IPv6 stable secret, see http://unix.stackexchange.com/a/255955/151693
+SYSCTL_ALL="`sysctl -a 2>&1 | grep -ve 'sysctl: reading key "net.ipv6.conf.*.stable_secret"'`"
 SYSCTL_SYSTEM="`sysctl --system | grep -v "* Applying" | sed -e 's/^/\\t/'`"
 echo "SYSCTL_CONF=\"" >> "$outfile"
 echo "$SYSCTL_SYSTEM" | while read sysctl_line; do
