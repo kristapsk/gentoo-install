@@ -11,6 +11,11 @@ if [ ! -f /etc/portage/make.conf ]; then
     exit 1
 fi
 
+if [ "`whoami`" != "root" ]; then
+    echo Must be run as root!
+    exit 1
+fi
+
 lockdir=/tmp/config_gen.lock
 if mkdir "$lockdir" 2> /dev/null ; then
     trap 'rm -rf "$lockdir"' 0
