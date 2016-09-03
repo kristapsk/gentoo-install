@@ -42,6 +42,21 @@ USE_KERNEL_CONFIG=""
 # Format is CONFIG_OPTION=<y|n|m>, separated by a newline.
 ADDITIONAL_KERNEL_CONFIG="
     CONFIG_SYN_COOKIES=y
+    
+    # for perf_events:
+    CONFIG_PERF_EVENTS=y
+    # for stack traces:
+    CONFIG_FRAME_POINTER=y
+    # kernel symbols:
+    CONFIG_KALLSYMS=y
+    # kernel function trace:
+    CONFIG_FTRACE=y
+    # kernel-level dynamic tracing:
+    CONFIG_KPROBES=y
+    CONFIG_KPROBE_EVENTS=y
+    
+    # systemwide file use stats:
+    CONFIG_FANOTIFY=y
 "
 # Specify kernel binary blob ebuilds here, if needed.
 KERNEL_EXTRA_FIRMWARE=""
