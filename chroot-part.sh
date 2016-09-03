@@ -49,7 +49,7 @@ fi
 
 if [[ "$FEATURES" =~ "installsources" ]]; then
 	echo --- Installing debugedit
-	emerge sys-util/debugedit
+	emerge dev-util/debugedit
 fi
 
 echo --- Configuring the Kernel
