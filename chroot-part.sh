@@ -47,6 +47,11 @@ if [ "$LOCALES" != "" ]; then
 fi
 
 
+if [[ "$FEATURES" =~ "installsources" ]]; then
+	echo --- Installing debugedit
+	emerge dev-util/debugedit
+fi
+
 echo --- Configuring the Kernel
 
 if [ "$KERNEL_EBUILD" == "" ]; then
@@ -356,7 +361,7 @@ fi
 case $BOOTLOADER in
     grub2)
         echo ------ Using GRUB2
-        emerge sys-boot/grub
+        emerge sys-boot/grub:2
         echo "$bootdevs" | while read bootdev; do
             grub2-install /dev/$bootdev
         done
