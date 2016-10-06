@@ -78,6 +78,9 @@ echo "$ADDITIONAL_KERNEL_CONFIG" | while read kernel_config; do
         sed -i "s/.*$kernel_config_key.*/$replace_line/" .config
     fi
 done
+# Some required kernel config (for initrd)
+sed -i "s/.*CONFIG_BLK_DEV_INITRD.*/CONFIG_BLK_DEV_INITRD=y/" .config
+sed -i "s/.*CONFIG_DEVTMPFS.*/CONFIG_DEVTMPFS=y/" .config
 # May be required to enable dependencies of ADDITIONAL_KERNEL_CONFIG
 make olddefconfig
 kernel_version="`make kernelversion`"
@@ -181,6 +184,15 @@ while read tool_line; do
         emerge_list="$emerge_list $tool"
         tool_without_slot="`echo "$tool" | sed 's/:.*$//'`"
         if [ -d "/usr/portage/$tool_without_slot" ]; then
+            # static is required for busybox for initrd
+            if [ "$tool" == "sys-apps/busybox" ]; then
+                if grep -qs -- "-static" <<< "$use_changes"; then
+                    use_changes="`echo "$use_changes" | sed 's/-static//'`"
+                fi
+                if ! grep -qs "static" <<< "$use_changes"; then
+                    use_changes="$use_changes static"
+                fi
+            fi
             if [ "$use_changes" != "" ]; then
                 echo "$tool $use_changes" >> /etc/portage/package.use/gentoo-install
             fi
@@ -201,6 +213,10 @@ if ! grep -qs "net-misc/dhcpcd" <<< "$emerge_list"; then
     if [ "$needs_dhcpcd" == "1" ]; then
         emerge_list="$emerge_list net-misc/dhcpcd"
     fi
+fi
+if ! grep -qs "sys-apps/busybox" <<< "$emerge_list"; then
+    emerge_list="$emerge_list sys-apps/busybox"
+    echo "sys-apps/busybox static" >> /etc/portage/package.use/gentoo-install
 fi
 if ! grep -qs "sys-fs/jfsutils" <<< "$emerge_list"; then
     if grep -qs "jfs" < /proc/mounts; then
@@ -269,6 +285,7 @@ fi
 # 5) do specific things needed for each tool
 # FixMe: hardcoded currently, may make this nicer in future
 
+
 if grep -qs "app-admin/syslog-ng" <<< "$emerge_list"; then
     rc-update add syslog-ng default
     if grep -qs "app-admin/logcheck" <<< "$emerge_list"; then
@@ -306,12 +323,23 @@ if grep -qs "app-portage/layman" <<< "$emerge_list"; then
     echo "source /var/lib/layman/make.conf" >> /etc/portage/make.conf
 fi
 
+# 6) copy necessary stuff to initrd
+cp -a /bin/busybox /usr/src/initramfs/bin/busybox
+if [ -x /sbin/mdadm ]; then
+    cp -a /sbin/mdadm /usr/src/initramfs/sbin/mdadm
+fi
+
 echo --- Configuring the Environment
 
 if [ "$DEFAULT_EDITOR" != "" ]; then
     eselect editor set "$DEFAULT_EDITOR"
     . /etc/profile
 fi
+
+echo --- Creating custom initramfs
+cd /usr/src/initramfs
+find . -print0 | cpio --null -ov --format=newc | gzip -9 > /boot/initramfs-gentoo-install.img
+cd - > /dev/null
 
 echo --- Configuring the Bootloader
 
@@ -344,10 +372,6 @@ case $BOOTLOADER in
         emerge sys-boot/grub:0 || exit 1
 
         rootpart="`grep "\s/\s" /etc/fstab | grep -v "^#" | cut -f 1`"
-        # I had problems with root=UUID=..., let's not use it for now.
-        if grep -qs "^UUID=" <<< "$rootpart"; then
-            rootpart=$(blkid -U $(sed 's/UUID=//' <<< "$rootpart"))
-        fi
 
         echo "default 0" > /boot/grub/grub.conf
         echo "timeout 5" >> /boot/grub/grub.conf
@@ -357,6 +381,7 @@ case $BOOTLOADER in
         #echo "root $rootgrub" >> /boot/grub/grub.conf
         echo "root (hd0,0)" >> /boot/grub/grub.conf
         echo "kernel /boot/kernel-$kernel_version-auto root=$rootpart $ADDITIONAL_KERNEL_ARGS" >> /boot/grub/grub.conf
+        echo "initrd /boot/initramfs-gentoo-install.img" >> /boot/grub/grub.conf
 
         echo "$bootdevs" | while read bootdev; do
             echo -e "device (hd0) /dev/$bootdev\nroot (hd0,0)\nsetup (hd0)\nquit" | grub

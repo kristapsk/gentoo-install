@@ -129,6 +129,9 @@ if [ "$USE_KERNEL_CONFIG" != "" ]; then
 fi
 grep "\s/mnt/gentoo" /proc/mounts > /mnt/gentoo/mounts.txt
 
+mkdir -p /mnt/gentoo/usr/src/initramfs/{bin,dev,etc,lib,lib64,mnt/root,proc,root,sbin,sys}
+cp initramfs-init.sh /mnt/gentoo/usr/src/initramfs/init
+
 mount -t proc proc /mnt/gentoo/proc
 mount --rbind /sys /mnt/gentoo/sys
 mount --rbind /dev /mnt/gentoo/dev

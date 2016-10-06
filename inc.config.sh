@@ -72,6 +72,7 @@ SUDO_WHEEL_ALL="1"
 # Additionally, the following ones will be always emerged under certain
 # circumstances:
 #   * net-misc/dhcpcd - if network configured via DHCP
+#   * sys-apps/busybox[static] - always
 #   * sys-fs/jfsutils - if JFS partition(s) detected
 #   * sys-fs/mdadm - if active software RAID devices detected
 #   * sys-fs/reiserfsprogs - if ReiserFS partition(s) detected
