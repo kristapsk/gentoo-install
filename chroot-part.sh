@@ -189,8 +189,8 @@ while read tool_line; do
         emerge_list="$emerge_list $tool"
         tool_without_slot="`echo "$tool" | sed 's/:.*$//'`"
         if [ -d "/usr/portage/$tool_without_slot" ]; then
-            # static is required for busybox for initrd
-            if [ "$tool" == "sys-apps/busybox" ]; then
+            # initramfs tools must be static linked
+            if [ "$tool" == "sys-apps/busybox" ] || [ "$tool" == "sys-fs/mdadm" ]; then
                 if grep -qs -- "-static" <<< "$use_changes"; then
                     use_changes="`echo "$use_changes" | sed 's/-static//'`"
                 fi
@@ -234,6 +234,7 @@ fi
 if ! grep -qs "sys-fs/mdadm" <<< "$emerge_list"; then
     if grep -qs "active" < /proc/mdstat; then
         emerge_list="$emerge_list sys-fs/mdadm"
+        echo "sys-fs/mdadm static" >> /etc/portage/package.use/gentoo-install
     fi
 fi
 if ! grep -qs "sys-fs/reiserfsprogs" <<< "$emerge_list"; then
