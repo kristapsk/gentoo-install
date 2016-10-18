@@ -214,6 +214,9 @@ done <<< "$SYSTEM_TOOLS"
 # 2) add more tools to list, if needed
 # adding after previous step, and checking isn't it already on list, so user
 # is free to add custom USE flags to each of it.
+if ! grep -qs "app-arch/cpio" <<< "$emerge_list"; then
+    emerge_list="$emerge_list app-arch/cpio"
+fi
 if ! grep -qs "net-misc/dhcpcd" <<< "$emerge_list"; then
     if [ "$needs_dhcpcd" == "1" ]; then
         emerge_list="$emerge_list net-misc/dhcpcd"
