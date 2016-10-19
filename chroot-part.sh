@@ -67,6 +67,8 @@ if [ -f /usr/src/use_kernel_config ]; then
     cp /usr/src/use_kernel_config .config
     make olddefconfig
 else
+    echo "------ Automatically generate configuration from live environment"
+    zcat /proc/config.gz > .config
     make olddefconfig
     make localyesconfig
 fi
