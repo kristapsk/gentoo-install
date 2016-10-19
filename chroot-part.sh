@@ -86,6 +86,28 @@ done
 # Some required kernel config (for initrd)
 sed -i "s/.*CONFIG_BLK_DEV_INITRD.*/CONFIG_BLK_DEV_INITRD=y/" .config
 sed -i "s/.*CONFIG_DEVTMPFS.*/CONFIG_DEVTMPFS=y/" .config
+# Software RAID
+if grep -qs "active" /proc/mdstat; then
+    sed -i "s/.*CONFIG_MD_AUTODETECT.*/CONFIG_MD_AUTODETECT=y/" .config
+    if grep -qs " : .*linear " /proc/mdstat; then
+        sed -i "s/.*CONFIG_MD_LINEAR.*/CONFIG_MD_LINEAR=y/" .config
+    fi
+    if grep -qs " : .*raid0 " /proc/mdstat; then
+        sed -i "s/.*CONFIG_MD_RAID0.*/CONFIG_MD_RAID0=y/" .config
+    fi
+    if grep -qs " : .*raid1 " /proc/mdstat; then
+        sed -i "s/.*CONFIG_MD_RAID1.*/CONFIG_MD_RAID1=y/" .config
+    fi
+    if grep -qs " : .*raid10 " /proc/mdstat; then
+        sed -i "s/.*CONFIG_MD_RAID10.*/CONFIG_MD_RAID10=y/" .config
+    fi
+    if grep -qs " : .*\(raid4\|raid5\|raid6\) " /proc/mdstat; then
+        sed -i "s/.*CONFIG_MD_RAID456.*/CONFIG_MD_RAID456=y/" .config
+    fi
+    if grep -qs " : .*multipath " /proc/mdstat; then
+        sed -i "s/.*CONFIG_MD_MULTIPATH.*/CONFIG_MD_MULTIPATH=y/" .config
+    fi
+fi
 # May be required to enable dependencies of ADDITIONAL_KERNEL_CONFIG
 make olddefconfig
 kernel_version="`make kernelversion`"
