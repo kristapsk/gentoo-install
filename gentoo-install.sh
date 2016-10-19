@@ -115,6 +115,9 @@ if pgrep dhcpcd > /dev/null; then
     echo "1" > /mnt/gentoo/use_dhcpcd.txt
 fi
 
+echo --- Checking for system type
+dmidecode -s system-product-name > /mnt/gentoo/system-product-name.txt
+
 echo --- Chrooting
 
 cp -L /etc/resolv.conf /mnt/gentoo/etc/

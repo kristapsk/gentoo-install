@@ -68,9 +68,28 @@ if [ -f /usr/src/use_kernel_config ]; then
     make olddefconfig
 else
     echo "------ Automatically generate configuration from live environment"
-    zcat /proc/config.gz > .config
     make olddefconfig
     make localyesconfig
+    if grep -qs "HVM domU" /system-product-name.txt; then
+        sed -i "s/.*CONFIG_HYPERVISOR_GUEST.*/CONFIG_HYPERVISOR_GUEST=y/" .config
+        make olddefconfig
+        sed -i "s/.*CONFIG_PARAVIRT.*/CONFIG_PARAVIRT=y/" .config
+        make olddefconfig
+        sed -i "s/.*CONFIG_XEN.*/CONFIG_XEN=y/" .config
+        sed -i "s/.*CONFIG_PARAVIRT_GUEST.*/CONFIG_PARAVIRT_GUEST=y/" .config
+        sed -i "s/.*CONFIG_PARAVIRT_SPINLOCKS.*/CONFIG_PARAVIRT_SPINLOCKS=y/" .config
+        make olddefconfig
+        sed -i "s/.*CONFIG_HVC_DRIVER.*/CONFIG_HVC_DRIVER=y/" .config
+        sed -i "s/.*CONFIG_HVC_XEN.*/CONFIG_HVC_XEN=y/" .config
+        sed -i "s/.*CONFIG_XEN_FBDEV_FRONTEND.*/CONFIG_XEN_FBDEV_FRONTEND=y/" .config
+        sed -i "s/.*CONFIG_XEN_BLKDEV_FRONTEND.*/CONFIG_XEN_BLKDEV_FRONTEND=y/" .config
+        sed -i "s/.*CONFIG_XEN_NETDEV_FRONTEND.*/CONFIG_XEN_NETDEV_FRONTEND=y/" .config
+        sed -i "s/.*CONFIG_XEN_PCIDEV_FRONTEND.*/CONFIG_XEN_PCIDEV_FRONTEND=y/" .config
+        sed -i "s/.*CONFIG_INPUT_XEN_KBDDEV_FRONTEND.*/CONFIG_INPUT_XEN_KBDDEV_FRONTEND=y/" .config
+        sed -i "s/.*CONFIG_XEN_FBDEV_FRONTEND.*/CONFIG_XEN_FBDEV_FRONTEND=y/" .config
+        sed -i "s/.*CONFIG_XEN_XENBUS_FRONTEND.*/CONFIG_XEN_XENBUS_FRONTEND=y/" .config
+        sed -i "s/.*CONFIG_XEN_SAVE_RESTORE.*/CONFIG_XEN_SAVE_RESTORE=y/" .config
+    fi
 fi
 echo "$ADDITIONAL_KERNEL_CONFIG" | while read kernel_config; do
     # remove whitespaces
@@ -440,7 +459,7 @@ if [ "$SUDO_WHEEL_ALL" != "" ]; then
 fi
 
 echo "--- Cleanup"
-rm -f /stage3-*.tar.bz2 /chroot-part.sh /mounts.txt /use_dhcpcd.txt
+rm -f /stage3-*.tar.bz2 /chroot-part.sh /mounts.txt /use_dhcpcd.txt /system-product-name.txt
 
 echo "--- All DONE, reboot to finish."
 
