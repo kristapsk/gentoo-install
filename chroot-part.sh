@@ -71,6 +71,7 @@ else
     make olddefconfig
     make localyesconfig
     if grep -qs "HVM domU" /system-product-name.txt; then
+        # https://wiki.xenproject.org/wiki/Mainline_Linux_Kernel_Configs#Configuring_the_Kernel_for_domU_Support
         sed -i "s/.*CONFIG_HYPERVISOR_GUEST.*/CONFIG_HYPERVISOR_GUEST=y/" .config
         make olddefconfig
         sed -i "s/.*CONFIG_PARAVIRT.*/CONFIG_PARAVIRT=y/" .config
