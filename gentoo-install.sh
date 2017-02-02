@@ -89,6 +89,9 @@ fi
 if [ "$LINGUAS" != "" ]; then
     echo "LINGUAS=\"$LINGUAS\"" >> $make_conf
 fi
+if [ "$L10N" != "" ]; then
+    echo "L10N=\"$L10N\"" >> $make_conf
+fi
 
 # Package specific make.conf options
 
