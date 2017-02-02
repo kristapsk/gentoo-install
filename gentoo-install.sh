@@ -77,6 +77,10 @@ fi
 num_cores="`nproc`"
 echo "MAKEOPTS=\"-j$((num_cores + 1))\"" >> $make_conf
 
+if [ "$http_proxy" != "" ]; then
+    echo "http_proxy=\"$http_proxy\"" >> $make_conf
+fi
+
 if [ "$FEATURES" != "" ]; then
     echo "FEATURES=\"$FEATURES\"" >> $make_conf
 fi

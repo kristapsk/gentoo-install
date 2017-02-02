@@ -1,6 +1,7 @@
 # required make.conf settings
 # GENTOO_MIRROR is required to use FTP protocol for now
 GENTOO_MIRROR="ftp://distfiles.gentoo.org"
+http_proxy=""
 CFLAGS="-march=native -O2 -pipe"
 #CFLAGS="-march=native -O2 -pipe -ggdb -fno-omit-frame-pointer"
 USE="bindist mmx sse sse2 -X vim-syntax"
