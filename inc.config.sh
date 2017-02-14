@@ -4,7 +4,7 @@ GENTOO_MIRROR="ftp://distfiles.gentoo.org"
 http_proxy=""
 CFLAGS="-march=native -O2 -pipe"
 #CFLAGS="-march=native -O2 -pipe -ggdb -fno-omit-frame-pointer"
-USE="bindist mmx sse sse2 -X vim-syntax"
+USE="-bindist mmx sse sse2 -X vim-syntax"
 
 # optional make.conf settings (leave blank for defaults)
 FEATURES="preserve-libs"
