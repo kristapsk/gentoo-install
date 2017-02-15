@@ -392,7 +392,6 @@ cd - > /dev/null
 
 echo --- Configuring the Bootloader
 
-grep -v rootfs /proc/mounts > /etc/mtab
 bootpart="`df /boot | tail -n 1 | sed 's/\s\+/\t/g' | cut -f 1`"
 bootdevs="`lsblk -is $bootpart -o NAME | tail -n+2`"
 while grep -qs "^[^A-Za-z0-9_]" <<< "$bootdevs"; do
