@@ -207,10 +207,10 @@ real_hostname="`eval echo "$TARGET_HOSTNAME"`"
 sed -i "s/127\.0\.0\.1\s\+localhost/127\.0\.0\.1\t$real_hostname localhost/" /etc/hosts
 
 
-echo --- Setting root password
-
-echo -e "$ROOT_PASSWORD\n$ROOT_PASSWORD\n" | passwd
-
+if [ "$ROOT_PASSWORD" != "" ]; then
+    echo --- Setting root password
+    echo -e "$ROOT_PASSWORD\n$ROOT_PASSWORD\n" | passwd
+fi
 
 echo --- sysctl
 echo "$SYSCTL_CONF" | while read sysctl_conf_line; do

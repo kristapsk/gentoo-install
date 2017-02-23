@@ -24,8 +24,8 @@ if [ "$TARGET_HOSTNAME" == "" ]; then
     exit 1
 fi
 
-if [ "$ROOT_PASSWORD" == "" ]; then
-    echo "root password in configuration blank, cannot continue!"
+if [ "$ROOT_PASSWORD" == "" ] && [ "$SUDO_WHEEL_ALL" != "1" ]; then
+    echo "Either root password or SUDO_WHEEL_ALL=1 must be specified!"
     exit 1
 fi
 
