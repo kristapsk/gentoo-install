@@ -174,6 +174,9 @@ done
 swapon -s | tail -n -1 | cut -f 1 | while read swap_line; do
     printf "$fstab_format\n" "UUID=`lsblk -no UUID $swap_line`" "none" "swap" "sw" "0 0" >> /etc/fstab
 done
+# CD-ROM
+mkdir /mnt/cdrom
+echo "/dev/sr0\t/mnt/cdrom\tauto\tnoauto,ro\t0 0" >> /etc/fstab
 
 echo --- Configuring Networking
 
