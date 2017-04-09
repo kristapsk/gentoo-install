@@ -5,6 +5,7 @@ exit
 . /etc/profile
 . /etc/inc.config.sh
 
+MACHINE="`uname -m`"
 num_cores="`nproc`"
 
 # Be sure, we have directory versions, not single file.
@@ -68,6 +69,9 @@ if [ -f /usr/src/use_kernel_config ]; then
     make olddefconfig
 else
     echo "------ Automatically generate configuration from live environment"
+    if [ "$MACHINE" == "i686" ]; then
+        sed -i "s/.*CONFIG_64BIT.*/# CONFIG_64BIT is not set/" .config
+    fi
     make olddefconfig
     make localyesconfig
 fi
@@ -417,7 +421,7 @@ case $BOOTLOADER in
         echo ------ Using GRUB Legacy
         
         echo ">=sys-boot/grub-2" >> /etc/portage/package.mask/grub
-        if [ "`uname -m`" == "x86_64" ]; then
+        if [ "$MACHINE" == "x86_64" ]; then
             echo "sys-libs/ncurses abi_x86_32" >> /etc/portage/package.use/gentoo-install
         fi
         emerge sys-boot/grub:0 || exit 1
