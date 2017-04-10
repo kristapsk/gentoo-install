@@ -180,7 +180,7 @@ swapon -s | tail -n -1 | cut -f 1 | while read swap_line; do
 done
 # CD-ROM
 mkdir /mnt/cdrom
-echo "/dev/sr0\t/mnt/cdrom\tauto\tnoauto,ro\t0 0" >> /etc/fstab
+printf "$fstab_format" "/dev/sr0" "/mnt/cdrom" "auto" "noauto,ro" "0 0" >> /etc/fstab
 
 echo --- Configuring Networking
 
