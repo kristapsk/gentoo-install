@@ -137,7 +137,7 @@ fi
 # May be required to enable dependencies of ADDITIONAL_KERNEL_CONFIG
 make olddefconfig
 kernel_version="`make kernelversion`"
-make -j$((num_cores + 1))
+make -j$num_cores
 make modules_install
 cp arch/x86/boot/bzImage /boot/kernel-$kernel_version-auto || exit 1
 

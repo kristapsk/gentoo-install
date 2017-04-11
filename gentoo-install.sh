@@ -75,7 +75,12 @@ if [ "$GENTOO_ARCH" == "amd64" ] || [ "$GENTOO_ARCH" == "x86" ]; then
 fi
 
 num_cores="`nproc`"
-echo "MAKEOPTS=\"-j$((num_cores + 1))\"" >> $make_conf
+mem_gigs="$(( `grep MemTotal /proc/meminfo | sed 's/\s\+/\t/g' | cut -f 2` / 1024 / 1024 ))"
+if [ "$num_cores" -lt "$mem_gigs" ]; then
+    echo "MAKEOPTS=\"-j$num_cores\"" >> $make_conf
+else
+    echo "MAKEOPTS=\"-j$mem_gigs\"" >> $make_conf
+fi
 
 if [ "$http_proxy" != "" ]; then
     echo "http_proxy=\"$http_proxy\"" >> $make_conf
