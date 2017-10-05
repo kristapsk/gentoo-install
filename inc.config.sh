@@ -38,7 +38,7 @@ DEFAULT_LOCALE="POSIX"
 #DEFAULT_EDITOR="/usr/bin/vi"
 
 # Leave blank for default
-KERNEL_EBUILD="hardened-sources"
+KERNEL_EBUILD="gentoo-sources"
 # You can specify kernel .config file name (absolute/relative path prior
 # chrooting). If left blank, "make localyesconfig" is used.
 USE_KERNEL_CONFIG=""
