@@ -43,11 +43,18 @@ esac
 echo === Installing Gentoo GNU/Linux for $GENTOO_ARCH
 
 cd /mnt/gentoo
-rm -f stage3-*.tar.bz2
+rm -f stage3-*.tar*
 while true; do
-    wget "$GENTOO_MIRROR/releases/$GENTOO_ARCH/autobuilds/current-stage3-$GENTOO_SUBARCH/stage3-$GENTOO_SUBARCH-????????.tar.bz2" && break
+    wget "$GENTOO_MIRROR/releases/$GENTOO_ARCH/autobuilds/current-stage3-$GENTOO_SUBARCH/stage3-$GENTOO_SUBARCH-????????T??????Z.tar*" && break
 done
-tar xvjpf stage3-*.tar.bz2 || exit 1
+if [ -f stage3-*.tar.xz ]; then
+    tar xpf stage3-*.tar.xz --xattrs-include='*.*' --numeric-owner || exit 1
+elif [ -f stage3-*.tar.bz2 ]; then
+    tar xpf stage3-*.tar.bz2 --xattrs-include='*.*' --numeric-owner || exit 1
+else
+    echo "FATAL: Unknown stage3 tarball filename!"
+    exit 1
+fi
 
 if dmesg | grep -qs Xen; then
     echo --- Creating Xen device nodes
