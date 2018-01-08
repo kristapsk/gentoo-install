@@ -43,7 +43,7 @@ if [ "$LOCALES" != "" ]; then
     locale-gen
     if [ "$DEFAULT_LOCALE" != "" ]; then
         eselect locale set $DEFAULT_LOCALE
-        env-update && . /etc/profile
+        env-update && . /etc/profile && export PS1="(chroot) $PS1"
     fi
 fi
 
@@ -140,6 +140,9 @@ kernel_version="`make kernelversion`"
 make -j$num_cores
 make modules_install
 cp arch/x86/boot/bzImage /boot/kernel-$kernel_version-auto || exit 1
+
+# May be needed :(
+emerge sys-kernel/linux-firmware
 
 echo --- Configuring Filesystems
 
@@ -276,6 +279,16 @@ fi
 if ! grep -qs "sys-apps/busybox" <<< "$emerge_list"; then
     emerge_list="$emerge_list sys-apps/busybox"
     echo "sys-apps/busybox static" >> /etc/portage/package.use/gentoo-install
+fi
+if ! grep -qs "sys-fs/btrfs-progs" <<< "$emerge_list"; then
+    if grep -qs "btrfs" < /proc/mounts; then
+        emerge_list="$emerge_list sys-fs/btrfs-progs"
+    fi
+fi
+if ! grep -qs "sys-fs/dosfstools" <<< "$emerge_list"; then
+    if grep -qs "fat" < /proc/mounts; then
+        emerge_list="$emerge_list sys-fs/dosfstools"
+    fi
 fi
 if ! grep -qs "sys-fs/jfsutils" <<< "$emerge_list"; then
     if grep -qs "jfs" < /proc/mounts; then

@@ -139,6 +139,9 @@ dmidecode -s system-product-name > /mnt/gentoo/system-product-name.txt
 
 echo --- Chrooting
 
+mkdir -p /mnt/gentoo/etc/portage/repos.conf
+cp /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos.conf/gentoo.conf
+
 cp -L /etc/resolv.conf /mnt/gentoo/etc/
 
 cd - > /dev/null

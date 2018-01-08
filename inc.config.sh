@@ -76,8 +76,11 @@ SUDO_WHEEL_ALL=""
 # Specific USE flag changes can be specified in square brackets
 # Additionally, the following ones will be always emerged under certain
 # circumstances:
+#   * app-arch/cpio - always
 #   * net-misc/dhcpcd - if network configured via DHCP
 #   * sys-apps/busybox[static] - always
+#   * sys-fs/btrfs-progs - if Btrfs partition(s) detected
+#   * sys-fs/dosfstools - if FAT partition(s) detected
 #   * sys-fs/jfsutils - if JFS partition(s) detected
 #   * sys-fs/mdadm - if active software RAID devices detected
 #   * sys-fs/reiserfsprogs - if ReiserFS partition(s) detected

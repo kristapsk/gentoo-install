@@ -13,5 +13,6 @@ Known issues:
 * Missing configuration of /etc/rc.conf, /etc/conf.d/keymaps,
 /etc/conf.d/hwclock, /etc/inittab, ...
 * PPPoE client (net-dialup/ppp) is not detected and installed automatically
-* If using GRUB Legacy, boot partition must be "(hd0,0)".
+* If using GRUB Legacy, boot partition must be "(hd0,0)"
+* Systemd is not supported
 
