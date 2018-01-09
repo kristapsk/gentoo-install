@@ -437,7 +437,7 @@ case $BOOTLOADER in
         if [ "$MACHINE" == "x86_64" ]; then
             echo "sys-libs/ncurses abi_x86_32" >> /etc/portage/package.use/gentoo-install
         fi
-        emerge sys-boot/grub:0 || exit 1
+        emerge sys-boot/grub-static || exit 1
 
         rootpart="`grep "\s/\s" /etc/fstab | grep -v "^#" | cut -f 1`"
 
