@@ -476,6 +476,8 @@ fi
 
 echo "--- Cleanup"
 rm -f /stage3-*.tar.bz2 /chroot-part.sh /mounts.txt /use_dhcpcd.txt /system-product-name.txt
+sed -i 's/ROOT_PASSWORD=.*/#ROOT_PASSWORD=""/' /etc/inc.config.sh
+sed -i 's/USER_PASSWORD=.*/#USER_PASSWORD=""/' /etc/inc.config.sh
 
 echo "--- All DONE, reboot to finish."
 
