@@ -100,7 +100,9 @@ fi
 
 num_cores="`nproc`"
 mem_gigs="$(( `grep MemTotal /proc/meminfo | sed 's/\s\+/\t/g' | cut -f 2` / 1024 / 1024 ))"
-if [ "$num_cores" -lt "$mem_gigs" ]; then
+if [ "$mem_gigs" == "0" ]; then
+    echo "MAKEOPTS=\"-j1\"" >> $make_conf
+elif [ "$num_cores" -lt "$mem_gigs" ]; then
     echo "MAKEOPTS=\"-j$num_cores\"" >> $make_conf
 else
     echo "MAKEOPTS=\"-j$mem_gigs\"" >> $make_conf
