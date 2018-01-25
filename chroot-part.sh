@@ -219,7 +219,11 @@ sed -i "s/127\.0\.0\.1\s\+localhost/127\.0\.0\.1\t$real_hostname localhost/" /et
 
 if [ "$ROOT_PASSWORD" != "" ]; then
     echo --- Setting root password
-    echo -e "$ROOT_PASSWORD\n$ROOT_PASSWORD\n" | passwd
+    if [[ ${ROOT_PASSWORD:0:1} == "$" ]]; then
+        usermod -p "$ROOT_PASSWORD" root
+    else
+        echo -e "$ROOT_PASSWORD\n$ROOT_PASSWORD\n" | passwd
+    fi
 fi
 
 echo --- sysctl
@@ -466,8 +470,12 @@ if [ "$USER_LOGIN" != "" ]; then
     if [ "$USER_GROUPS" == "" ]; then
         USER_GRUPS="users"
     fi
-    useradd -m -G $USER_GROUPS -s /bin/bash $USER_LOGIN
-    echo -e "$USER_PASSWORD\n$USER_PASSWORD\n" | passwd $USER_LOGIN
+    if [[ ${USER_PASSWORD:0:1} == "$" ]]; then
+        useradd -m -G $USER_GROUPS -s /bin/bash -p "$USER_PASSWORD" $USER_LOGIN
+    else
+        useradd -m -G $USER_GROUPS -s /bin/bash $USER_LOGIN
+        echo -e "$USER_PASSWORD\n$USER_PASSWORD\n" | passwd $USER_LOGIN
+    fi
 fi
 
 if [ "$SUDO_WHEEL_ALL" != "" ]; then

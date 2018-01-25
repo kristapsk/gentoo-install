@@ -63,6 +63,7 @@ TARGET_HOSTNAME="tux-box-\`ifconfig -a | grep ether | head -n 1 | sed 's/\s\+/\t
 #TARGET_HOSTNAME="tux-box"
 
 # Optionally specify root password. Is not required if ordinary user has SUDO_WHEEL_ALL="1".
+# Strings beginning with '$' will be treated as /etc/shadow hashes instead of plaintext passwords.
 ROOT_PASSWORD=""
 
 USER_LOGIN="larry"
