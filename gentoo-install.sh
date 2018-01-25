@@ -1,6 +1,6 @@
 #! /bin/bash
 
-. inc.config.sh
+CONFIG_FILE="inc.config.sh"
 
 if [ "`whoami`" != "root" ]; then
     echo Must be run as root!
@@ -12,6 +12,17 @@ if ! grep -qs /mnt/gentoo /proc/mounts; then
     echo "Target /mnt/gentoo not mounted!"
     exit 1
 fi
+
+if [ "$1" != "" ]; then
+    CONFIG_FILE="$1"
+fi
+
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "Configuration file $CONFIG_FILE does not exist!"
+    exit 1
+fi
+
+. "$CONFIG_FILE"
 
 # Some configuration checks
 if [ "$USE_KERNEL_CONFIG" != "" ] && [ ! -f "$USE_KERNEL_CONFIG" ]; then
@@ -151,7 +162,7 @@ cp /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos
 cp -L /etc/resolv.conf /mnt/gentoo/etc/
 
 cd - > /dev/null
-cp inc.config.sh /mnt/gentoo/etc/
+cp "$CONFIG_FILE" /mnt/gentoo/etc/inc.config.sh
 # we remove first three lines which contains error message and exit, as guard
 # against direct launching of chroot-part script.
 tail -n+4 chroot-part.sh > /mnt/gentoo/chroot-part.sh
