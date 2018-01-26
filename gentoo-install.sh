@@ -156,6 +156,19 @@ fi
 echo --- Checking for system type
 dmidecode -s system-product-name > /mnt/gentoo/system-product-name.txt
 
+if [ "$RC_LOCAL_SCRIPTS" != "" ]; then
+    echo --- Copying local.d scripts
+    while read locald_script; do
+        if [ "$locald_script" != "" ]; then
+            echo "------ $locald_script"
+            cp "$locald_script" /mnt/gentoo/etc/local.d/
+        fi
+    done <<< "$RC_LOCAL_SCRIPTS"
+    chmod +x /mnt/gentoo/etc/local.d/*.start
+    chmod +x /mnt/gentoo/etc/local.d/*.stop
+    echo "rc_verbose=yes" > /mnt/gentoo/etc/conf.d/local
+fi
+
 echo --- Chrooting
 
 mkdir -p /mnt/gentoo/etc/portage/repos.conf
