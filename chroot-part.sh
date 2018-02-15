@@ -352,7 +352,7 @@ fi
 
 # 4) emerge SYSTEM_TOOLS, with auto-unmasking, if necessary
 emerge --autounmask-write --newuse --update $emerge_list 
-if ls /etc/portage/._cfg* >/dev/null 2>&1; then
+if ls /etc/portage/._cfg* >/dev/null 2>&1 || ls /etc/portage/package.*/._cfg* >/dev/null 2>&1; then
     etc-update --automode -5
     emerge --newuse --update $emerge_list || exit 1
 fi
