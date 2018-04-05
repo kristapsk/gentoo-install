@@ -96,6 +96,7 @@ SYSTEM_TOOLS="
     app-misc/tmux
     app-portage/gentoolkit
     app-portage/layman
+    dev-libs/libpcre2[jit]
     dev-vcs/git
     mail-client/nail
     mail-mta/ssmtp
