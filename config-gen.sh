@@ -123,7 +123,7 @@ cat /var/lib/portage/world | while read pkg_name; do
     pkg_name_without_slot="`echo "$pkg_name" | sed 's/:.*$//'`"
     if ! [[ "$system_tools_filter" =~ "$pkg_name_without_slot" ]]; then
 #        pkg_name_with_version="`basename -a /var/db/pkg/$pkg_name_without_slot* | head -n 1`"
-        if [ "`cat /var/db/pkg/$pkg_name_without_slot*/repository | head -n 1`" == "gentoo" ]; then
+        if [ "`cat /var/db/pkg/$pkg_name_without_slot*/repository 2>/dev/null | head -n 1`" == "gentoo" ]; then
             echo -ne "\t$pkg_name" >> "$outfile"
             if [ "$package_use_file" != "" ]; then
                 pkg_use="`cat $package_use_file | grep "$pkg_name_without_slot" | grep -v '^#' | sed 's/\s\+/\t/g' | cut -f 2- | tr '\n' ' ' | xargs -n1 | sort -u | tr '\n' ',' | sed 's/,$//'`"
