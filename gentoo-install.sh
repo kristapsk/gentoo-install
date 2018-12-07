@@ -64,9 +64,10 @@ if [ "$LOCAL_STAGE3" != "" ] && [ -f "$LOCAL_STAGE3" ]; then
 else
     echo --- Downloading stage3
     while true; do
-        wget "$GENTOO_MIRROR/releases/$GENTOO_ARCH/autobuilds/current-stage3-$GENTOO_SUBARCH/stage3-$GENTOO_SUBARCH-????????T??????Z.tar*" && break
+        # Specify 10 sec. timeout to faster things up, not all Gentoo mirrors host an FTP server.
+        wget --connect-timeout=10 "$GENTOO_MIRROR/releases/$GENTOO_ARCH/autobuilds/current-stage3-$GENTOO_SUBARCH/stage3-$GENTOO_SUBARCH-????????T??????Z.tar*" && break
     done
-    if ! [ -f stage3-$GENTOO_SUBARCH-????????T??????Z.tar.{bz2,xz} ]; then
+    if [ ! -f "stage3-$GENTOO_SUBARCH-????????T??????Z.tar.bz2" ] && [ ! -f "stage3-$GENTOO_SUBARCH-????????T??????Z.tar.xz" ]; then
         echo "Download failed"
         exit 1
     fi
@@ -76,7 +77,7 @@ else
     done
     gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc || exit 1
     for hashalgo in sha512 whirlpool; do
-        if ! grep -qs $(openssl dgst -$hashalgo stage3-$GENTOO_SUBARCH-????????T??????Z.tar.{bz2,xz} 2> /dev/null | cut -d ' ' -f 1) stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc; then
+        if ! grep -qs $(openssl dgst -$hashalgo stage3-$GENTOO_SUBARCH-????????T??????Z.tar.{bz2,xz} 2> /dev/null | grep -Eo "[0-9a-z]{128,}") stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc; then
             echo "stage3 $hashalgo checksum mismatch"
             exit 1
         fi
