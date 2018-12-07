@@ -26,7 +26,6 @@ if [ "$SYSTEM_PROFILE" != "" ]; then
 	eselect profile list
 fi
 
-
 echo --- Switching timezone to $TIMEZONE
 
 echo "$TIMEZONE" > /etc/timezone
@@ -292,6 +291,11 @@ fi
 if ! grep -qs "sys-fs/dosfstools" <<< "$emerge_list"; then
     if grep -qs "fat" < /proc/mounts; then
         emerge_list="$emerge_list sys-fs/dosfstools"
+    fi
+fi
+if ! grep -qs "sys-fs/e2fsprogs" <<< "$emerge_list"; then
+    if grep -qs "ext" < /proc/mounts; then
+        emerge_list="$emerge_list sys-fs/e2fsprogs"
     fi
 fi
 if ! grep -qs "sys-fs/jfsutils" <<< "$emerge_list"; then
