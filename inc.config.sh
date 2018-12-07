@@ -75,15 +75,26 @@ USER_GROUPS="users,wheel"
 # Allow members of wheel group to execute any command using sudo. Change to "1" to enable.
 SUDO_WHEEL_ALL=""
 
+# Additional overlays to add, format is layman arguments, multiple can be added. Example:
+# LAYMAN_ADD="
+#	-a mysql
+#	-o https://raw.github.com/skyfms/portage-overlay/master/overlay.xml -L -a is-overlay
+# "
+# Will add app-portage/layman as a dependency, if not empty.
+LAYMAN_ADD="
+"
+
 # Necessary system tools to emerge
 # Specific USE flag changes can be specified in square brackets
 # Additionally, the following ones will be always emerged under certain
 # circumstances:
 #   * app-arch/cpio - always
+#   * app-portage/layman - if LAYMAN_ADD (see above) is not empty
 #   * net-misc/dhcpcd - if network configured via DHCP
 #   * sys-apps/busybox[static] - always
 #   * sys-fs/btrfs-progs - if Btrfs partition(s) detected
 #   * sys-fs/dosfstools - if FAT partition(s) detected
+#   * sys-fs/e2fsprogs - if ext2/ext3/ext4 partition(s) detected
 #   * sys-fs/jfsutils - if JFS partition(s) detected
 #   * sys-fs/mdadm - if active software RAID devices detected
 #   * sys-fs/reiserfsprogs - if ReiserFS partition(s) detected
@@ -97,7 +108,6 @@ SYSTEM_TOOLS="
     app-misc/mc
     app-misc/tmux
     app-portage/gentoolkit
-    app-portage/layman
     dev-libs/libpcre2[jit]
     dev-vcs/git
     mail-client/nail

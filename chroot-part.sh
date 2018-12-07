@@ -46,6 +46,15 @@ if [ "$LOCALES" != "" ]; then
     fi
 fi
 
+if [ "$LAYMAN_ADD" != "" ]; then
+    echo --- Configuring additional portage overlays
+    emerge app-portage/layman
+    echo "$LAYMAN_ADD" | while read layman_cmd; do
+        if [ "$layman_cmd" != "" ]; then
+            echo y | layman $LAYMAN_ADD
+        fi
+    done
+fi
 
 if [[ "$FEATURES" =~ "installsources" ]]; then
 	echo --- Installing debugedit
