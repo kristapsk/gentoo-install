@@ -108,8 +108,20 @@ echo --- Configuring the compile options
 
 make_conf="/mnt/gentoo/etc/portage/make.conf"
 cp $make_conf ${make_conf}.dist
-sed -i "s/CFLAGS=.*/CFLAGS=\"$CFLAGS\"/" $make_conf
-sed -i "s/USE=.*/USE=\"$USE\"/" $make_conf
+if [ "$COMMON_FLAGS" != "" ]; then
+    sed -i "s/COMMON_FLAGS=.*/COMMON_FLAGS=\"$COMMON_FLAGS\"/" $make_conf
+fi
+if [ "$CFLAGS" != "" ]; then
+    sed -i "s/CFLAGS=.*/CFLAGS=\"$CFLAGS\"/" $make_conf
+fi
+if [ "$CXXFLAGS" != "" ]; then
+    sed -i "s/CXXFLAGS=.*/CXXFLAGS=\"$CXXFLAGS\"/" $make_conf
+fi
+if grep -qs "USE=.*" $make_conf; then
+    sed -i "s/USE=.*/USE=\"$USE\"/" $make_conf
+else
+    echo -e "\nUSE=\"$USE\"" >> $make_conf
+fi
 
 if [ "$GENTOO_ARCH" == "amd64" ] || [ "$GENTOO_ARCH" == "x86" ]; then
     if [ "$CPU_FLAGS_X86" != "" ]; then
