@@ -12,6 +12,15 @@ num_cores="`nproc`"
 mkdir -p /etc/portage/package.use
 mkdir -p /etc/portage/package.mask
 
+function emerge_with_autounmask()
+{
+    emerge --autounmask-write $@
+    if ls /etc/portage/._cfg* > /dev/null 2>&1 || ls /etc/portage/package.*/._cfg* > /dev/null 2>&1; then
+        etc-update --automode -5 /etc/portage
+        emerge $@ || kill $$
+    fi
+}
+
 echo --- Configuring Portage
 
 emerge-webrsync
@@ -48,7 +57,8 @@ fi
 
 if [ "$LAYMAN_ADD" != "" ]; then
     echo --- Configuring additional portage overlays
-    emerge app-portage/layman
+    emerge_with_autounmask app-portage/layman
+
     echo "$LAYMAN_ADD" | while read layman_cmd; do
         if [ "$layman_cmd" != "" ]; then
             echo y | layman $LAYMAN_ADD
@@ -58,7 +68,7 @@ fi
 
 if [[ "$FEATURES" =~ "installsources" ]]; then
 	echo --- Installing debugedit
-	emerge dev-util/debugedit
+	emerge_with_autounmask dev-util/debugedit
 fi
 
 echo --- Configuring the Kernel
@@ -66,9 +76,9 @@ echo --- Configuring the Kernel
 if [ "$KERNEL_EBUILD" == "" ]; then
 	KERNEL_EBUILD=gentoo-sources
 fi
-emerge $KERNEL_EBUILD
+emerge_with_autounmask $KERNEL_EBUILD
 if [ "$KERNEL_EXTRA_FIRMWARE" != "" ]; then
-    emerge $KERNEL_EXTRA_FIRMWARE
+    emerge_with_autounmask $KERNEL_EXTRA_FIRMWARE
 fi
 cd /usr/src/linux
 if [ -f /usr/src/use_kernel_config ]; then
@@ -150,7 +160,7 @@ make modules_install
 cp arch/x86/boot/bzImage /boot/kernel-$kernel_version-auto || exit 1
 
 # May be needed :(
-emerge sys-kernel/linux-firmware
+emerge_with_autounmask sys-kernel/linux-firmware
 
 echo --- Configuring Filesystems
 
@@ -196,7 +206,7 @@ printf "$fstab_format\n" "/dev/sr0" "/mnt/cdrom" "auto" "noauto,ro" "0 0" >> /et
 echo --- Configuring Networking
 
 echo "hostname=\"$TARGET_HOSTNAME\"" > /etc/conf.d/hostname
-emerge --noreplace netifrc
+emerge_with_autounmask --noreplace netifrc
 net_iface="`route -n | grep "^0.0.0.0" | sed 's/\s\+/\t/g' | cut -f 8`"
 
 # If LiveCD has classic ethX network interface name, make sure that udev in
@@ -360,17 +370,12 @@ fi
 #
 if [[ "$USE" =~ "-bindist" ]] || grep -qs '\-bindist' /etc/portage/package.use/*; then
     echo "------ Resolving bindist USE flag issues"
-    emerge --unmerge openssl openssh && emerge openssl openssh
+    emerge --unmerge openssl openssh && emerge_with_autounmask openssl openssh
 fi
 
 # 4) emerge SYSTEM_TOOLS, with auto-unmasking, if necessary
-emerge --autounmask-write --newuse --update $emerge_list 
-if ls /etc/portage/._cfg* >/dev/null 2>&1 || ls /etc/portage/package.*/._cfg* >/dev/null 2>&1; then
-    etc-update --automode -5
-    emerge --newuse --update $emerge_list || exit 1
-fi
+emerge_with_autounmask --newuse --update $emerge_list
 
-# FixMe: need some 100% check that emerge haven't failed here.
 
 # 5) do specific things needed for each tool
 # FixMe: hardcoded currently, may make this nicer in future
@@ -441,7 +446,7 @@ fi
 case $BOOTLOADER in
     grub2)
         echo ------ Using GRUB2
-        emerge sys-boot/grub:2
+        emerge_with_autounmask sys-boot/grub:2
         echo "$bootdevs" | while read bootdev; do
             grub2-install /dev/$bootdev
         done
@@ -454,7 +459,7 @@ case $BOOTLOADER in
         if [ "$MACHINE" == "x86_64" ]; then
             echo "sys-libs/ncurses abi_x86_32" >> /etc/portage/package.use/gentoo-install
         fi
-        emerge sys-boot/grub-static || exit 1
+        emerge_with_autounmask sys-boot/grub-static
 
         rootpart="`grep "\s/\s" /etc/fstab | grep -v "^#" | cut -f 1`"
 
