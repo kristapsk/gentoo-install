@@ -53,6 +53,9 @@ esac
 
 echo === Installing Gentoo GNU/Linux for $GENTOO_ARCH
 
+echo -- Setting the date and time
+ntpd -q -g
+
 cd /mnt/gentoo
 rm -f stage3-*.tar*
 if [ "$LOCAL_STAGE3" != "" ] && [ -f "$LOCAL_STAGE3" ]; then
@@ -63,7 +66,23 @@ else
     while true; do
         wget "$GENTOO_MIRROR/releases/$GENTOO_ARCH/autobuilds/current-stage3-$GENTOO_SUBARCH/stage3-$GENTOO_SUBARCH-????????T??????Z.tar*" && break
     done
+    if ! [ -f stage3-$GENTOO_SUBARCH-????????T??????Z.tar.{bz2,xz} ]; then
+        echo "Download failed"
+        exit 1
+    fi
+    echo --- Verifying and validating
+    wget -q -O - https://www.gentoo.org/downloads/signatures/ | grep "0x[A-Z0-9]\{16\}" | sed 's/<[^>]*>//g' | sed 's/(.\+)//g' | while read key; do
+         gpg --keyserver hkps.pool.sks-keyservers.net --recv-keys $key
+    done
+    gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc || exit 1
+    for hashalgo in sha512 whirlpool; do
+        if ! grep -qs $(openssl dgst -$hashalgo stage3-$GENTOO_SUBARCH-????????T??????Z.tar.{bz2,xz} 2> /dev/null | cut -d ' ' -f 1) stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc; then
+            echo "stage3 $hashalgo checksum mismatch"
+            exit 1
+        fi
+    done
 fi
+echo --- Unpacking the stage tarball
 if [ -f stage3-*.tar.xz ]; then
     tar xpf stage3-*.tar.xz --xattrs-include='*.*' --numeric-owner || exit 1
 elif [ -f stage3-*.tar.bz2 ]; then
