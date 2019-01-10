@@ -24,7 +24,7 @@ QEMU_SOFTMMU_TARGETS=""
 QEMU_USER_TARGETS=""
 
 # System profile - leave blank to use installation CD default one
-SYSTEM_PROFILE="hardened/linux/amd64"
+#SYSTEM_PROFILE=""
 
 TIMEZONE="Europe/Riga"
 
