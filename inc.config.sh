@@ -81,8 +81,7 @@ SUDO_WHEEL_ALL=""
 #	-o https://raw.github.com/skyfms/portage-overlay/master/overlay.xml -L -a is-overlay
 # "
 # Will add app-portage/layman as a dependency, if not empty.
-LAYMAN_ADD="
-"
+LAYMAN_ADD=""
 
 # Necessary system tools to emerge
 # Specific USE flag changes can be specified in square brackets
