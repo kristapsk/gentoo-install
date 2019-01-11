@@ -447,9 +447,19 @@ case $BOOTLOADER in
     grub2)
         echo ------ Using GRUB2
         emerge_with_autounmask sys-boot/grub:2
-        echo "$bootdevs" | while read bootdev; do
-            grub-install /dev/$bootdev
-        done
+
+        # Some versions of XenServer has problems with graphical GRUB menu
+        # https://serverfault.com/questions/598668/vms-grub-menu-invisible-with-xenserver-6-0-2
+        sed -i "s/.*GRUB_TERMINAL=.*/GRUB_TERMINAL=console/g" /etc/default/grub
+
+        while read -u 3 bootdev; do
+            disklabel_type="$(fdisk -l /dev/$bootdev | grep "Disklabel type" | cut -d ' ' -f 3)"
+            if [ "$disklabel_type" == "gpt" ]; then
+                grub-install --target=x86_64-efi --efi-directory=/boot
+            else
+                grub-install /dev/$bootdev
+            fi
+        done 3<<< "$bootdevs"
         grub-mkconfig -o /boot/grub/grub.cfg
     ;;
     grub-legacy)
