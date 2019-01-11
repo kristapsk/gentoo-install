@@ -448,9 +448,9 @@ case $BOOTLOADER in
         echo ------ Using GRUB2
         emerge_with_autounmask sys-boot/grub:2
         echo "$bootdevs" | while read bootdev; do
-            grub2-install /dev/$bootdev
+            grub-install /dev/$bootdev
         done
-        grub2-mkconfig -o /boot/grub/grub.cfg
+        grub-mkconfig -o /boot/grub/grub.cfg
     ;;
     grub-legacy)
         echo ------ Using GRUB Legacy
