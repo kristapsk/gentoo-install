@@ -122,7 +122,7 @@ SYSTEM_TOOLS="
 "
 
 # Supported bootloaders: grub2, grub-legacy
-BOOTLOADER="grub-legacy"
+BOOTLOADER="grub2"
 
 # Scripts to add to /etc/local.d/, useful for post-install actions on a first boot.
 RC_LOCAL_SCRIPTS=""
