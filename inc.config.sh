@@ -90,6 +90,8 @@ LAYMAN_ADD=""
 #   * app-arch/cpio - always
 #   * app-portage/layman - if LAYMAN_ADD (see above) is not empty
 #   * net-misc/dhcpcd - if network configured via DHCP
+#   * net-wireless/wpa_supplicant - if WPA WiFi detected
+#   * net-wireless/wireless-tools - if WPA WiFi detected
 #   * sys-apps/busybox[static] - always
 #   * sys-fs/btrfs-progs - if Btrfs partition(s) detected
 #   * sys-fs/dosfstools - if FAT partition(s) detected

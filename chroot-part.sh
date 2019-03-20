@@ -215,7 +215,7 @@ if grep -qs "^eth" <<< "$net_iface"; then
     ADDITIONAL_KERNEL_ARGS="`echo "$ADDITIONAL_KERNEL_ARGS"` net.ifnames=0"
 fi
 
-if [ "`cat /use_dhcpcd.txt`" == "1" ]; then
+if [ "$(cat /use_dhcpcd.txt)" == "1" ]; then
     echo "config_$net_iface=\"dhcp\"" >> /etc/conf.d/net
     needs_dhcpcd=1
 else
@@ -225,6 +225,9 @@ else
     current_net_config_brd="`echo "$current_net_config_raw" | cut -f 7`"
     echo "config_$net_iface=\"$current_net_config_addr netmask $current_net_config_mask brd $current_net_config_brd\"" >> /etc/conf.d/net
     echo "routes_$net_iface=\"default via `route -n | grep "^0.0.0.0" | sed 's/\s\+/\t/g' | cut -f 2`\"" >> /etc/conf.d/net
+fi
+if [ "$(cat /use_wpa.txt)" == "1" ]; then
+    needs_wpa=1
 fi
 cd /etc/init.d
 ln -s net.lo net.$net_iface
@@ -296,6 +299,16 @@ fi
 if ! grep -qs "net-misc/dhcpcd" <<< "$emerge_list"; then
     if [ "$needs_dhcpcd" == "1" ]; then
         emerge_list="$emerge_list net-misc/dhcpcd"
+    fi
+fi
+if ! grep -qs "net-wireless/wireless-tools" <<< "$emerge_list"; then
+    if [ "$needs_wpa" == "1" ]; then
+        emerge_list="$emerge_list net-wireless/wireless-tools"
+    fi
+fi
+if ! grep -qs "net-wireless/wpa_supplicant" <<< "$emerge_list"; then
+    if [ "$needs_wpa" == "1" ]; then
+        emerge_list="$emerge_list net-wireless/wpa_supplicant"
     fi
 fi
 if ! grep -qs "sys-apps/busybox" <<< "$emerge_list"; then
@@ -511,7 +524,7 @@ if [ "$SUDO_WHEEL_ALL" != "" ]; then
 fi
 
 echo "--- Cleanup"
-rm -f /stage3-*.tar.bz2 /chroot-part.sh /mounts.txt /use_dhcpcd.txt /system-product-name.txt
+rm -f /stage3-*.tar.bz2 /chroot-part.sh /mounts.txt /use_dhcpcd.txt /use_wpa.txt /system-product-name.txt
 sed -i 's/ROOT_PASSWORD=.*/#ROOT_PASSWORD=""/' /etc/inc.config.sh
 sed -i 's/USER_PASSWORD=.*/#USER_PASSWORD=""/' /etc/inc.config.sh
 chmod 600 /etc/inc.config.sh

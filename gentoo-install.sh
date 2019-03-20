@@ -185,6 +185,15 @@ if pgrep dhcpcd > /dev/null; then
     echo "1" > /mnt/gentoo/use_dhcpcd.txt
 fi
 
+echo --- Checking for WPA
+
+touch /mnt/gentoo/use_wpa.txt
+if pgrep wpa_supplicant > /dev/null; then
+    echo "1" > /mnt/gentoo/use_wpa.txt
+    mkdir -p /mnt/gentoo/etc/wpa_supplicant/
+    cp -L /etc/wpa_supplicant/wpa_supplicant.conf /mnt/gentoo/etc/wpa_supplicant/wpa_supplicant.conf
+fi
+
 echo --- Checking for system type
 dmidecode -s system-product-name > /mnt/gentoo/system-product-name.txt
 
