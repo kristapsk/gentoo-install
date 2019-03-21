@@ -524,7 +524,7 @@ if [ "$SUDO_WHEEL_ALL" != "" ]; then
 fi
 
 echo "--- Cleanup"
-rm -f /stage3-*.tar.bz2 /chroot-part.sh /mounts.txt /use_dhcpcd.txt /use_wpa.txt /system-product-name.txt
+rm -f /stage3-*Z.tar* /chroot-part.sh /mounts.txt /use_dhcpcd.txt /use_wpa.txt /system-product-name.txt
 sed -i 's/ROOT_PASSWORD=.*/#ROOT_PASSWORD=""/' /etc/inc.config.sh
 sed -i 's/USER_PASSWORD=.*/#USER_PASSWORD=""/' /etc/inc.config.sh
 chmod 600 /etc/inc.config.sh
