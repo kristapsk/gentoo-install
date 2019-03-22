@@ -111,7 +111,6 @@ SYSTEM_TOOLS="
     app-portage/gentoolkit
     dev-libs/libpcre2[jit]
     dev-vcs/git
-    mail-client/nail
     mail-mta/ssmtp
     net-firewall/iptables
     net-misc/ntp
@@ -121,6 +120,7 @@ SYSTEM_TOOLS="
     sys-devel/gdb
     sys-process/cronie
     sys-process/lsof
+    virtual/mailx
 "
 
 # Supported bootloaders: grub2, grub-legacy
