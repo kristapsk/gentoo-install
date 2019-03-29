@@ -467,7 +467,7 @@ case $BOOTLOADER in
 
         while read -u 3 bootdev; do
             disklabel_type="$(fdisk -l /dev/$bootdev | grep "Disklabel type" | cut -d ' ' -f 3)"
-            if [ "$disklabel_type" == "gpt" ]; then
+            if [ "$disklabel_type" == "gpt" ] && [ -d /sys/firmware/efi ]; then
                 grub-install --target=x86_64-efi --efi-directory=/boot
             else
                 grub-install /dev/$bootdev
