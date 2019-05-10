@@ -23,7 +23,7 @@ function emerge_with_autounmask()
 
 echo --- Configuring Portage
 
-emerge-webrsync
+#emerge-webrsync
 emerge --sync
 
 
