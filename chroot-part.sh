@@ -249,7 +249,7 @@ fi
 
 echo --- sysctl
 echo "$SYSCTL_CONF" | while read sysctl_conf_line; do
-    echo "$sysctl_conf_line" | sed -s 's/^[ \t]*//' >> /etc/sysctl.d/gentoo-install.conf
+    echo "$sysctl_conf_line" | sed -s 's/^[ \t]*//' >> /etc/sysctl.d/local.conf
 done
 
 echo --- Installing Necessary System Tools
