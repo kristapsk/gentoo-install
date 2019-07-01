@@ -249,7 +249,9 @@ fi
 
 echo --- sysctl
 echo "$SYSCTL_CONF" | while read sysctl_conf_line; do
-    echo "$sysctl_conf_line" | sed -s 's/^[ \t]*//' >> /etc/sysctl.d/local.conf
+    if [ "$sysctl_conf_line" != "" ]; then
+        echo "$sysctl_conf_line" | sed -s 's/^[ \t]*//' >> /etc/sysctl.d/local.conf
+    fi
 done
 
 echo --- Installing Necessary System Tools
