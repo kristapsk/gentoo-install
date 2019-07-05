@@ -73,7 +73,7 @@ else
     fi
     echo --- Verifying and validating
     wget -q -O - https://www.gentoo.org/downloads/signatures/ | grep "0x[A-Z0-9]\{16\}" | sed 's/<[^>]*>//g' | sed 's/(.\+)//g' | while read key; do
-         gpg --keyserver hkps.pool.sks-keyservers.net --recv-keys $key
+         gpg --keyserver hkps://keys.gentoo.org --recv-keys $key
     done
     gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc || exit 1
     for hashalgo in sha512 whirlpool; do
