@@ -75,6 +75,10 @@ USER_GROUPS="users,wheel"
 # Allow members of wheel group to execute any command using sudo. Change to "1" to enable.
 SUDO_WHEEL_ALL=""
 
+# Put anything you want to append to /etc/hosts here.
+HOSTS_ADD="
+"
+
 # Additional overlays to add, format is layman arguments, multiple can be added. Example:
 # LAYMAN_ADD="
 #	-a mysql
