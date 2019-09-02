@@ -271,7 +271,7 @@ while read tool_line; do
         fi
         emerge_list="$emerge_list $tool"
         tool_without_slot="`echo "$tool" | sed 's/:.*$//'`"
-        if [ -d "/usr/portage/$tool_without_slot" ]; then
+        if emerge -p $tool_without_slot > /dev/null; then
             # initramfs tools must be static linked
             if [ "$tool" == "sys-apps/busybox" ] || [ "$tool" == "sys-fs/mdadm" ]; then
                 if grep -qs -- "-static" <<< "$use_changes"; then
