@@ -61,7 +61,7 @@ if [ "$LAYMAN_ADD" != "" ]; then
 
     echo "$LAYMAN_ADD" | while read layman_cmd; do
         if [ "$layman_cmd" != "" ]; then
-            echo y | layman $LAYMAN_ADD
+            echo y | layman $layman_cmd
         fi
     done
 fi
