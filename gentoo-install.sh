@@ -72,7 +72,7 @@ else
         exit 1
     fi
     echo --- Verifying and validating
-    wget -q -O - https://www.gentoo.org/downloads/signatures/ | grep "0x[A-Z0-9]\{16\}" | sed 's/<[^>]*>//g' | sed 's/(.\+)//g' | while read key; do
+    wget -q -O - https://www.gentoo.org/downloads/signatures/ | grep "[A-Z0-9]\{40\}" | sed 's/<[^>]*>//g' | sed 's/(.\+)//g' | while read key; do
          gpg --keyserver hkps.pool.sks-keyservers.net --recv-keys $key
     done
     gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc || exit 1
