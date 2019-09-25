@@ -13,6 +13,12 @@ if ! grep -qs /mnt/gentoo /proc/mounts; then
     exit 1
 fi
 
+no_gpg_validation=""
+if [ "$1" == "--no-gpg-validation" ]; then
+    no_gpg_validation="1"
+    shift
+fi
+
 if [ "$1" != "" ]; then
     CONFIG_FILE="$1"
 fi
@@ -71,11 +77,13 @@ else
         echo "Download failed"
         exit 1
     fi
-    echo --- Verifying and validating
-    wget -q -O - https://www.gentoo.org/downloads/signatures/ | grep "[A-Z0-9]\{40\}" | sed 's/<[^>]*>//g' | sed 's/(.\+)//g' | while read key; do
-         gpg --keyserver hkps.pool.sks-keyservers.net --recv-keys $key
-    done
-    gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc || exit 1
+    if [ "$no_gpg_validation" != "1" ]; then
+        echo --- Verifying and validating
+        wget -q -O - https://www.gentoo.org/downloads/signatures/ | grep "[A-Z0-9]\{40\}" | sed 's/<[^>]*>//g' | sed 's/(.\+)//g' | while read key; do
+            gpg --keyserver hkps.pool.sks-keyservers.net --recv-keys $key
+        done
+        gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc || exit 1
+    fi
     for hashalgo in sha512 whirlpool; do
         if ! grep -qs $(openssl dgst -$hashalgo stage3-$GENTOO_SUBARCH-????????T??????Z.tar.{bz2,xz} 2> /dev/null | grep -Eo "[0-9a-z]{128,}") stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc; then
             echo "stage3 $hashalgo checksum mismatch"
