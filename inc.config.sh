@@ -37,7 +37,7 @@ LOCALES="
 DEFAULT_LOCALE="POSIX"
 
 # Environment
-#DEFAULT_EDITOR="/usr/bin/vi"
+DEFAULT_EDITOR="/usr/bin/vi"
 
 # Leave blank for default
 KERNEL_EBUILD="gentoo-sources"
