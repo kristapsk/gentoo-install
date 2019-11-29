@@ -167,6 +167,9 @@ fi
 if [ "$L10N" != "" ]; then
     echo "L10N=\"$L10N\"" >> $make_conf
 fi
+if [ "$ACCEPT_LICENSE" != "" ]; then
+    echo "ACCEPT_LICENSE=\"$ACCEPT_LICENSE\"" >> $make_conf
+fi
 
 # Package specific make.conf options
 

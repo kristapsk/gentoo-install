@@ -23,6 +23,9 @@ NGINX_MODULES_MAIL=""
 QEMU_SOFTMMU_TARGETS=""
 QEMU_USER_TARGETS=""
 
+# Uncomment to auto-accept non-FREE licenses (old Gentoo default)
+#ACCEPT_LICENSE="* -@EULA"
+
 # System profile - leave blank to use installation CD default one
 #SYSTEM_PROFILE=""
 
