@@ -14,7 +14,7 @@ mkdir -p /etc/portage/package.mask
 
 function emerge_with_autounmask()
 {
-    emerge --autounmask-write $@
+    emerge --autounmask=y --autounmask-write $@
     if ls /etc/portage/._cfg* > /dev/null 2>&1 || ls /etc/portage/package.*/._cfg* > /dev/null 2>&1; then
         etc-update --automode -5 /etc/portage
         emerge $@ || kill $$
