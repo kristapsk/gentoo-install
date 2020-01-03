@@ -26,6 +26,11 @@ QEMU_USER_TARGETS=""
 # Uncomment to auto-accept non-FREE licenses (old Gentoo default)
 #ACCEPT_LICENSE="* -@EULA"
 
+# I prefer old emerge autounmask behaviour and it is also used by the install
+# script itself. Comment out this if you don't want it after install.
+# See also https://bugs.gentoo.org/658648.
+EMERGE_DEFAULT_OPTS="--autounmask"
+
 # System profile - leave blank to use installation CD default one
 #SYSTEM_PROFILE=""
 

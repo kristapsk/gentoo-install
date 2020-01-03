@@ -170,6 +170,9 @@ fi
 if [ "$ACCEPT_LICENSE" != "" ]; then
     echo "ACCEPT_LICENSE=\"$ACCEPT_LICENSE\"" >> $make_conf
 fi
+if [ "$EMERGE_DEFAULT_OPTS" != "" ]; then
+    echo "EMERGE_DEFAULT_OPTS=\"$EMERGE_DEFAULT_OPTS\"" >> $make_conf
+fi
 
 # Package specific make.conf options
 
