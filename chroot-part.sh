@@ -55,17 +55,6 @@ if [ "$LOCALES" != "" ]; then
     fi
 fi
 
-if [ "$LAYMAN_ADD" != "" ]; then
-    echo --- Configuring additional portage overlays
-    emerge_with_autounmask app-portage/layman
-
-    echo "$LAYMAN_ADD" | while read layman_cmd; do
-        if [ "$layman_cmd" != "" ]; then
-            echo y | layman $layman_cmd
-        fi
-    done
-fi
-
 if [[ "$FEATURES" =~ "installsources" ]]; then
 	echo --- Installing debugedit
 	emerge_with_autounmask dev-util/debugedit
@@ -239,6 +228,16 @@ sed -i "s/127\.0\.0\.1\s\+localhost/127\.0\.0\.1\t$real_hostname localhost/" /et
 # Add additional /etc/hosts entries, if needed
 echo "$HOSTS_ADD" >> /etc/hosts
 
+if [ "$LAYMAN_ADD" != "" ]; then
+    echo --- Configuring additional portage overlays
+    emerge_with_autounmask app-portage/layman
+
+    echo "$LAYMAN_ADD" | while read layman_cmd; do
+        if [ "$layman_cmd" != "" ]; then
+            echo y | layman $layman_cmd
+        fi
+    done
+fi
 
 if [ "$ROOT_PASSWORD" != "" ]; then
     echo --- Setting root password
