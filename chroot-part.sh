@@ -21,6 +21,28 @@ function emerge_with_autounmask()
     fi
 }
 
+function kernel_config_set()
+{
+    configfile="$1"
+    configparamarr=(${2//=/ })
+    configparam=${configparamarr[0]}
+    configvalue=${configparamarr[1]}
+    if grep -qsE "$configparam(=| is not set)" $configfile; then
+        if [[ $configvalue =~ y|m ]]; then
+            configline="$configparam=$configvalue"
+        elif [[ $configvalue == n ]]; then
+            configline="# $configparam is not set"
+        else
+            echo "WARNING: Invalid $configparam value \"$configvalue\""
+            return 1
+        fi
+        sed -i -E "s/(# )?$configparam(=.| is not set)/$configline/" $configfile
+    else
+        echo "WARNING: No $configparam in $configfile"
+        return 1
+    fi
+}
+
 echo --- Configuring Portage
 
 #emerge-webrsync
@@ -77,68 +99,62 @@ if [ -f /usr/src/use_kernel_config ]; then
 else
     echo "------ Automatically generate configuration from live environment"
     if [ "$MACHINE" == "i686" ]; then
-        sed -i "s/.*CONFIG_64BIT.*/# CONFIG_64BIT is not set/" .config
+        kernel_config_set .config CONFIG_64BIT=n
     fi
     make olddefconfig
     make localyesconfig
 fi
 if grep -qs "HVM domU" /system-product-name.txt; then
     # https://wiki.xenproject.org/wiki/Mainline_Linux_Kernel_Configs#Configuring_the_Kernel_for_domU_Support
-    sed -i "s/.*CONFIG_HYPERVISOR_GUEST.*/CONFIG_HYPERVISOR_GUEST=y/" .config
+    kernel_config_set .config CONFIG_HYPERVISOR_GUEST=y
     make olddefconfig
-    sed -i "s/.*CONFIG_PARAVIRT.*/CONFIG_PARAVIRT=y/" .config
+    kernel_config_set .config CONFIG_PARAVIRT=y
     make olddefconfig
-    sed -i "s/.*CONFIG_XEN.*/CONFIG_XEN=y/" .config
-    sed -i "s/.*CONFIG_PARAVIRT_GUEST.*/CONFIG_PARAVIRT_GUEST=y/" .config
-    sed -i "s/.*CONFIG_PARAVIRT_SPINLOCKS.*/CONFIG_PARAVIRT_SPINLOCKS=y/" .config
+    kernel_config_set .config CONFIG_XEN=y
+    kernel_config_set .config CONFIG_PARAVIRT_GUEST=y
+    kernel_config_set .config CONFIG_PARAVIRT_SPINLOCKS=y
     make olddefconfig
-    sed -i "s/.*CONFIG_HVC_DRIVER.*/CONFIG_HVC_DRIVER=y/" .config
-    sed -i "s/.*CONFIG_HVC_XEN.*/CONFIG_HVC_XEN=y/" .config
-    sed -i "s/.*CONFIG_XEN_FBDEV_FRONTEND.*/CONFIG_XEN_FBDEV_FRONTEND=y/" .config
-    sed -i "s/.*CONFIG_XEN_BLKDEV_FRONTEND.*/CONFIG_XEN_BLKDEV_FRONTEND=y/" .config
-    sed -i "s/.*CONFIG_XEN_NETDEV_FRONTEND.*/CONFIG_XEN_NETDEV_FRONTEND=y/" .config
-    sed -i "s/.*CONFIG_XEN_PCIDEV_FRONTEND.*/CONFIG_XEN_PCIDEV_FRONTEND=y/" .config
-    sed -i "s/.*CONFIG_INPUT_XEN_KBDDEV_FRONTEND.*/CONFIG_INPUT_XEN_KBDDEV_FRONTEND=y/" .config
-    sed -i "s/.*CONFIG_XEN_FBDEV_FRONTEND.*/CONFIG_XEN_FBDEV_FRONTEND=y/" .config
-    sed -i "s/.*CONFIG_XEN_XENBUS_FRONTEND.*/CONFIG_XEN_XENBUS_FRONTEND=y/" .config
-    sed -i "s/.*CONFIG_XEN_SAVE_RESTORE.*/CONFIG_XEN_SAVE_RESTORE=y/" .config
+    kernel_config_set .config CONFIG_HVC_DRIVER=y
+    kernel_config_set .config CONFIG_HVC_XEN=y
+    kernel_config_set .config CONFIG_XEN_FBDEV_FRONTEND=y
+    kernel_config_set .config CONFIG_XEN_BLKDEV_FRONTEND=y
+    kernel_config_set .config CONFIG_XEN_NETDEV_FRONTEND=y
+    kernel_config_set .config CONFIG_XEN_PCIDEV_FRONTEND=y
+    kernel_config_set .config CONFIG_INPUT_XEN_KBDDEV_FRONTEND=y
+    kernel_config_set .config CONFIG_XEN_FBDEV_FRONTEND=y
+    kernel_config_set .config CONFIG_XEN_XENBUS_FRONTEND=y
+    kernel_config_set .config CONFIG_XEN_SAVE_RESTORE=y
 fi
 echo "$ADDITIONAL_KERNEL_CONFIG" | while read kernel_config; do
     # remove whitespaces
     kernel_config="`xargs <<< "$kernel_config"`"
     if [ "$kernel_config" != "" ]; then
-        kernel_config_key="${kernel_config::-2}"
-        if [ "${kernel_config:-2}" == "=n" ]; then
-            replace_line="# $kernel_config_key is not set"
-        else
-            replace_line="$kernel_config"
-        fi
-        sed -i "s/.*$kernel_config_key.*/$replace_line/" .config
+        kernel_config_set .config "$kernel_config"
     fi
 done
 # Some required kernel config (for initrd)
-sed -i "s/.*CONFIG_BLK_DEV_INITRD.*/CONFIG_BLK_DEV_INITRD=y/" .config
-sed -i "s/.*CONFIG_DEVTMPFS.*/CONFIG_DEVTMPFS=y/" .config
+kernel_config_set .config CONFIG_BLK_DEV_INITRD=y
+kernel_config_set .config CONFIG_DEVTMPFS=y
 # Software RAID
 if grep -qs "active" /proc/mdstat; then
-    sed -i "s/.*CONFIG_MD_AUTODETECT.*/CONFIG_MD_AUTODETECT=y/" .config
+    kernel_config_set .config CONFIG_MD_AUTODETECT=y
     if grep -qs " : .*linear " /proc/mdstat; then
-        sed -i "s/.*CONFIG_MD_LINEAR.*/CONFIG_MD_LINEAR=y/" .config
+        kernel_config_set .config CONFIG_MD_LINEAR=y
     fi
     if grep -qs " : .*raid0 " /proc/mdstat; then
-        sed -i "s/.*CONFIG_MD_RAID0.*/CONFIG_MD_RAID0=y/" .config
+        kernel_config_set .config CONFIG_MD_RAID0=y
     fi
     if grep -qs " : .*raid1 " /proc/mdstat; then
-        sed -i "s/.*CONFIG_MD_RAID1.*/CONFIG_MD_RAID1=y/" .config
+        kernel_config_set .config CONFIG_MD_RAID1=y
     fi
     if grep -qs " : .*raid10 " /proc/mdstat; then
-        sed -i "s/.*CONFIG_MD_RAID10.*/CONFIG_MD_RAID10=y/" .config
+        kernel_config_set .config CONFIG_MD_RAID10=y
     fi
     if grep -qs " : .*\(raid4\|raid5\|raid6\) " /proc/mdstat; then
-        sed -i "s/.*CONFIG_MD_RAID456.*/CONFIG_MD_RAID456=y/" .config
+        kernel_config_set .config CONFIG_MD_RAID456=y
     fi
     if grep -qs " : .*multipath " /proc/mdstat; then
-        sed -i "s/.*CONFIG_MD_MULTIPATH.*/CONFIG_MD_MULTIPATH=y/" .config
+        kernel_config_set .config CONFIG_MD_MULTIPATH=y
     fi
 fi
 # May be required to enable dependencies of ADDITIONAL_KERNEL_CONFIG
