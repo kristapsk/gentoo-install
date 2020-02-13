@@ -26,17 +26,16 @@ function kernel_config_set()
     configfile="$1"
     configparamarr=(${2//=/ })
     configparam=${configparamarr[0]}
-    configvalue=${configparamarr[1]}
+    configvalue="${configparamarr[1]}"
     if grep -qsE "$configparam(=| is not set)" $configfile; then
         if [[ $configvalue =~ y|m ]]; then
             configline="$configparam=$configvalue"
         elif [[ $configvalue == n ]]; then
             configline="# $configparam is not set"
         else
-            echo "WARNING: Invalid $configparam value \"$configvalue\""
-            return 1
+            configline="$configparam=\"$configvalue\""
         fi
-        sed -i -E "s/(# )?$configparam(=.| is not set)/$configline/" $configfile
+        sed -i -E "s/(# )?$configparam(=.+| is not set)/$configline/" $configfile
     else
         echo "WARNING: No $configparam in $configfile"
         return 1
