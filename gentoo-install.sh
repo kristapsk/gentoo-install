@@ -173,6 +173,9 @@ fi
 if [ "$EMERGE_DEFAULT_OPTS" != "" ]; then
     echo "EMERGE_DEFAULT_OPTS=\"$EMERGE_DEFAULT_OPTS\"" >> $make_conf
 fi
+if [ "$PORTAGE_ELOG_MAILURI" != "" ]; then
+    echo "PORTAGE_ELOG_MAILURI=\"$PORTAGE_ELOG_MAILURI\"" >> $make_conf
+fi
 
 # Package specific make.conf options
 
