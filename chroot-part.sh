@@ -243,7 +243,7 @@ sed -i "s/127\.0\.0\.1\s\+localhost/127\.0\.0\.1\t$real_hostname localhost/" /et
 # Add additional /etc/hosts entries, if needed
 echo "$HOSTS_ADD" >> /etc/hosts
 
-if [ "$LAYMAN_ADD" != "" ]; then
+if [ "$(xargs <<< "$LAYMAN_ADD")" != "" ]; then
     echo --- Configuring additional portage overlays
     emerge_with_autounmask app-portage/layman
 
