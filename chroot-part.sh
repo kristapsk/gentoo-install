@@ -56,6 +56,11 @@ if [ "$SYSTEM_PROFILE" != "" ]; then
 	eselect profile list
 fi
 
+
+echo --- Updating the @world set
+emerge_with_autounmask --update --deep --newuse @world
+
+
 echo --- Switching timezone to $TIMEZONE
 
 echo "$TIMEZONE" > /etc/timezone
