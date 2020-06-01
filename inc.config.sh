@@ -119,6 +119,7 @@ SYSTEM_TOOLS="
     app-admin/logrotate
     app-admin/sudo
     app-admin/syslog-ng
+    app-editors/nano
     app-editors/vim
     app-misc/mc
     app-misc/tmux
