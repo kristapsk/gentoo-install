@@ -1,6 +1,6 @@
 # required make.conf settings
 # GENTOO_MIRROR is required to use FTP protocol for now
-GENTOO_MIRROR="ftp://distfiles.gentoo.org"
+GENTOO_MIRROR="ftp://distfiles.gentoo.org/pub/gentoo"
 COMMON_FLAGS="-march=native -O2 -pipe"
 #COMMON_FLAGS="-march=native -O2 -pipe -ggdb -fno-omit-frame-pointer"
 #CFLAGS="\${COMMON_FLAGS}"
