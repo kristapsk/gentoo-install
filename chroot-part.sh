@@ -129,6 +129,23 @@ if grep -qs "HVM domU" /system-product-name.txt; then
     kernel_config_set .config CONFIG_XEN_XENBUS_FRONTEND=y
     kernel_config_set .config CONFIG_XEN_SAVE_RESTORE=y
 fi
+if [[ "$(wc -l < /has-virtio.txt)" != "0" ]]; then
+    # https://wiki.gentoo.org/wiki/QEMU/Linux_guest#Kernel
+    kernel_config_set .config CONFIG_HYPERVISOR_GUEST=y
+    make olddefconfig
+    kernel_config_set .config CONFIG_PARAVIRT=y
+    make olddefconfig
+    kernel_config_set .config CONFIG_KVM_GUEST=y
+    kernel_config_set .config CONFIG_VIRTIO_MENU=y
+    make olddefconfig
+    kernel_config_set .config CONFIG_VIRTIO_PCI=y
+    make olddefconfig
+    kernel_config_set .config CONFIG_VIRTIO_BLK=y
+    kernel_config_set .config CONFIG_VIRTIO_NET=y
+    kernel_config_set .config CONFIG_SCSI_LOWLEVEL=y
+    make olddefconfig
+    kernel_config_set .config CONFIG_SCSI_VIRTIO=y
+fi
 echo "$ADDITIONAL_KERNEL_CONFIG" | while read kernel_config; do
     # remove whitespaces
     kernel_config="`xargs <<< "$kernel_config"`"
@@ -548,7 +565,7 @@ if [ "$SUDO_WHEEL_ALL" != "" ]; then
 fi
 
 echo "--- Cleanup"
-rm -f /stage3-*Z.tar* /chroot-part.sh /mounts.txt /use_dhcpcd.txt /use_wpa.txt /system-product-name.txt
+rm -f /stage3-*Z.tar* /chroot-part.sh /mounts.txt /use_dhcpcd.txt /use_wpa.txt /system-product-name.txt /has-virtio.txt
 sed -i 's/ROOT_PASSWORD=.*/#ROOT_PASSWORD=""/' /etc/inc.config.sh
 sed -i 's/USER_PASSWORD=.*/#USER_PASSWORD=""/' /etc/inc.config.sh
 chmod 600 /etc/inc.config.sh

@@ -213,6 +213,7 @@ fi
 
 echo --- Checking for system type
 dmidecode -s system-product-name > /mnt/gentoo/system-product-name.txt
+lspci | grep Virtio > /mnt/gentoo/has-virtio.txt
 
 if [ "$RC_LOCAL_SCRIPTS" != "" ]; then
     echo --- Copying local.d scripts
