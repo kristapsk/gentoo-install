@@ -541,6 +541,31 @@ case $BOOTLOADER in
             echo -e "device (hd0) /dev/$bootdev\nroot (hd0,0)\nsetup (hd0)\nquit" | grub
         done
     ;;
+    refind)
+        echo ------ Using rEFInd
+
+        refind_use=""
+        for fs in btrfs ext2 ext4 hfs iso9660 ntfs reiserfs; do
+            if grep -qs "$fs" < /proc/mounts; then
+                refind_use="$refind_use$fs "
+            fi
+        done
+        if [[ "$refind_use" != "" ]]; then
+            echo "sys-boot/refind $refind_use" >> /etc/portage/package.use/gentoo-install
+        fi
+        emerge_with_autounmask sys-boot/efibootmgr sys-boot/refind
+
+        mount -o remount,rw -t efivarfs efivarfs /sys/firmware/efi/efivars
+        refind-install
+
+        mkdir -p /boot/EFI/BOOT
+        cp /boot/EFI/refind/refind_x64.efi /boot/EFI/BOOT/bootx64.efi
+
+        rootpart="`grep "\s/\s" /etc/fstab | grep -v "^#" | cut -f 1`"
+        cmdline="root=$rootpart $ADDITIONAL_KERNEL_ARGS initrd=initramfs-gentoo-install.img"
+        echo -e "\"Boot with standard options\"\t\"BOOT_IMAGE=/boot/kernel-$kernel_version-auto $cmdline\"" > /boot/refind_linux.conf
+        echo -e "\"Boot to single-user mode\"\t\"BOOT_IMAGE=/boot/kernel-$kernel_version-auto $cmdline single\"" >> /boot/refind_linux.conf
+    ;;
     *)
         echo FATAL: Unknown bootloader: $BOOTLOADER
         exit 1
