@@ -43,7 +43,8 @@ function kernel_config_set()
 }
 
 echo --- Configuring Portage
-
+# ldconfig resolves error "grep: error while loading shared libraries: libpcre.so.1: cannot open shared object file: No such file or directory" after chrooting from other linux than life CD
+ldconfig 
 #emerge-webrsync
 emerge --sync
 
@@ -95,7 +96,7 @@ emerge_with_autounmask $KERNEL_EBUILD
 if [ "$KERNEL_EXTRA_FIRMWARE" != "" ]; then
     emerge_with_autounmask $KERNEL_EXTRA_FIRMWARE
 fi
-cd /usr/src/linux
+cd `ls -d /usr/src/* | sed -n '/linux.*/{p;q;}'`
 if [ -f /usr/src/use_kernel_config ]; then
     echo "------ Using prepared kernel configuration"
     cp /usr/src/use_kernel_config .config

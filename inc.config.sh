@@ -4,12 +4,13 @@
 # to ones that don't all the time. In that case go to
 # https://gentoo.org/downloads/mirrors/ and manually change GENTOO_MIRROR
 # variable to some mirror that is listed as supporting FTP.
-GENTOO_MIRROR="ftp://distfiles.gentoo.org/pub/gentoo"
+#GENTOO_MIRROR="ftp://distfiles.gentoo.org/pub/gentoo"
+GENTOO_MIRROR="ftp://ftp.wh2.tu-dresden.de/pub/mirrors/gentoo"
 COMMON_FLAGS="-march=native -O2 -pipe"
 #COMMON_FLAGS="-march=native -O2 -pipe -ggdb -fno-omit-frame-pointer"
 #CFLAGS="\${COMMON_FLAGS}"
 #CXXFLAGS="\${COMMON_FLAGS}"
-USE="-bindist -X verify-sig vim-syntax"
+USE="-bindist -X verify-sig vim-syntax perl"
 
 # optional make.conf settings (leave blank for defaults)
 http_proxy=""
@@ -17,7 +18,7 @@ FEATURES="preserve-libs"
 #FEATURES="preserve-libs splitdebug installsources"
 CPU_FLAGS_X86="mmx sse sse2"
 INPUT_DEVICES=""
-VIDEO_CARDS=""
+VIDEO_CARDS="nvidia nouveau"
 LINGUAS=""
 L10N=""
 PORTAGE_ELOG_MAILURI=""
@@ -87,7 +88,7 @@ USER_PASSWORD="somepass"
 USER_GROUPS="users,wheel"
 
 # Allow members of wheel group to execute any command using sudo. Change to "1" to enable.
-SUDO_WHEEL_ALL=""
+SUDO_WHEEL_ALL="1"
 
 # Put anything you want to append to /etc/hosts here.
 HOSTS_ADD="
