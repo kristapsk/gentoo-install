@@ -5,7 +5,7 @@
 # https://gentoo.org/downloads/mirrors/ and manually change GENTOO_MIRROR
 # variable to some mirror that is listed as supporting FTP.
 #GENTOO_MIRROR="ftp://distfiles.gentoo.org/pub/gentoo"
-GENTOO_MIRROR="ftp://ftp.wh2.tu-dresden.de/pub/mirrors/gentoo"
+GENTOO_MIRROR="ftp://mirrors.dotsrc.org/gentoo"
 COMMON_FLAGS="-march=native -O2 -pipe"
 #COMMON_FLAGS="-march=native -O2 -pipe -ggdb -fno-omit-frame-pointer"
 #CFLAGS="\${COMMON_FLAGS}"
@@ -120,7 +120,6 @@ LAYMAN_ADD=""
 #   * sys-fs/reiserfsprogs - if ReiserFS partition(s) detected
 #   * sys-fs/xfsprogs - if XFS partition(s) detected
 SYSTEM_TOOLS="
-    app-admin/logcheck
     app-admin/logrotate
     app-admin/sudo
     app-admin/syslog-ng

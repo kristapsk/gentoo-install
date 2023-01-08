@@ -3,4 +3,7 @@ logrotate do not rotate everything by default, logcheck either does not check
 all or tries to check non-existing logfiles (in case of syslog-ng default
 config), which causes errors. Also see
 <http://www.gentoo.org/doc/en/security/security-handbook.xml?part=1&chap=3>.
-
+Janis 08.01.2023: 
+GPG vaalidation have to be rewritten. no-gpg-validation no-checksum-validation
+there are no ebuilds to satisfy "app-admin/logcheck" . quickfix by removing package from the inc.config.sh
+time sync disabled. Proper app needs to be selected. ntpd is not working anymore

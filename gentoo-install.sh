@@ -13,9 +13,11 @@ if ! grep -qs /mnt/gentoo /proc/mounts; then
     exit 1
 fi
 
-no_gpg_validation=""
+no_gpg_validation="1"
+no_checksum_validation="1"
 if [ "$1" == "--no-gpg-validation" ]; then
     no_gpg_validation="1"
+    no_checksum_validation="1"
     shift
 fi
 
@@ -49,8 +51,8 @@ fi
 
 MACHINE="`uname -m`"
 case $MACHINE in
-    i686) GENTOO_ARCH=x86 ; GENTOO_SUBARCH=i686 ;;
-    x86_64) GENTOO_ARCH=amd64 ; GENTOO_SUBARCH=amd64 ;;
+    i686) GENTOO_ARCH=x86 ; GENTOO_SUBARCH=i686-openrc ;;
+    x86_64) GENTOO_ARCH=amd64 ; GENTOO_SUBARCH=amd64-openrc ;;
     *)
         echo "Unknown / unsupported machine type $MACHINE!"
         exit 1
@@ -59,8 +61,8 @@ esac
 
 echo === Installing Gentoo GNU/Linux for $GENTOO_ARCH
 
-echo -- Setting the date and time
-ntpd -q -g
+echo -- Setting the date and time. Todo Try max for 1 mminute.
+#ntpd -4 -q -g
 
 cd /mnt/gentoo
 rm -f stage3-*.tar*
@@ -83,14 +85,18 @@ else
             #gpg --keyserver hkps.pool.sks-keyservers.net --recv-keys $key
             gpg --keyserver hkps://keys.gentoo.org --recv-keys $key
         done
-        gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc || exit 1
+        #gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc || exit 1
+        #gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS || exit 1
+        gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.asc || exit 1
     fi
-    for hashalgo in sha512 whirlpool; do
-        if ! grep -qs $(openssl dgst -$hashalgo stage3-$GENTOO_SUBARCH-????????T??????Z.tar.{bz2,xz} 2> /dev/null | grep -Eo "[0-9a-z]{128,}") stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc; then
-            echo "stage3 $hashalgo checksum mismatch"
-            exit 1
-        fi
-    done
+    if [ "$no_checksum_validation" != "1" ]; then
+        for hashalgo in sha512 whirlpool; do
+            if ! grep -qs $(openssl dgst -$hashalgo stage3-$GENTOO_SUBARCH-????????T??????Z.tar.{bz2,xz} 2> /dev/null | grep -Eo "[0-9a-z]{128,}") stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc; then
+                echo "stage3 $hashalgo checksum mismatch"
+                exit 1
+            fi
+        done
+    fi
 fi
 echo --- Unpacking the stage tarball
 if [ -f stage3-*.tar.xz ]; then
