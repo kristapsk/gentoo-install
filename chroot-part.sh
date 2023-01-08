@@ -12,6 +12,11 @@ num_cores="`nproc`"
 mkdir -p /etc/portage/package.use
 mkdir -p /etc/portage/package.mask
 
+# ldconfig resolves error "grep: error while loading shared libraries:
+# libpcre.so.1: cannot open shared object file: No such file or directory"
+# after chrooting from other linux than life CD
+ldconfig
+
 function emerge_with_autounmask()
 {
     emerge --autounmask=y --autounmask-write $@
