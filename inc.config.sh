@@ -119,6 +119,7 @@ LAYMAN_ADD=""
 #   * sys-fs/reiserfsprogs - if ReiserFS partition(s) detected
 #   * sys-fs/xfsprogs - if XFS partition(s) detected
 SYSTEM_TOOLS="
+    app-admin/gentoo-perl-helpers
     app-admin/logrotate
     app-admin/sudo
     app-admin/syslog-ng
