@@ -60,7 +60,7 @@ esac
 echo === Installing Gentoo GNU/Linux for $GENTOO_ARCH
 
 echo -- Setting the date and time
-ntpd -q -g
+timeout 60s ntpd -q -g
 
 cd /mnt/gentoo
 rm -f stage3-*.tar*
