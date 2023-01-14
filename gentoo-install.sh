@@ -49,8 +49,8 @@ fi
 
 MACHINE="`uname -m`"
 case $MACHINE in
-    i686) GENTOO_ARCH=x86 ; GENTOO_SUBARCH=i686 ;;
-    x86_64) GENTOO_ARCH=amd64 ; GENTOO_SUBARCH=amd64 ;;
+    i686) GENTOO_ARCH=x86 ; GENTOO_SUBARCH=i686-openrc ;;
+    x86_64) GENTOO_ARCH=amd64 ; GENTOO_SUBARCH=amd64-openrc ;;
     *)
         echo "Unknown / unsupported machine type $MACHINE!"
         exit 1
