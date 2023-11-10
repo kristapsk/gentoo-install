@@ -93,20 +93,11 @@ SUDO_WHEEL_ALL=""
 HOSTS_ADD="
 "
 
-# Additional overlays to add, format is layman arguments, multiple can be added. Example:
-# LAYMAN_ADD="
-#	-a mysql
-#	-o https://raw.github.com/skyfms/portage-overlay/master/overlay.xml -L -a is-overlay
-# "
-# Will add app-portage/layman as a dependency, if not empty.
-LAYMAN_ADD=""
-
 # Necessary system tools to emerge
 # Specific USE flag changes can be specified in square brackets
 # Additionally, the following ones will be always emerged under certain
 # circumstances:
 #   * app-arch/cpio - always
-#   * app-portage/layman - if LAYMAN_ADD (see above) is not empty
 #   * net-misc/dhcpcd - if network configured via DHCP
 #   * net-wireless/wpa_supplicant - if WPA WiFi detected
 #   * net-wireless/wireless-tools - if WPA WiFi detected
