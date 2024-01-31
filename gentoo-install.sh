@@ -61,8 +61,8 @@ esac
 
 echo === Installing Gentoo GNU/Linux for $GENTOO_ARCH
 
-echo -- Setting the date and time. Todo Try max for 1 mminute.
-#ntpd -4 -q -g
+echo -- Setting the date and time
+timeout 60s ntpd -q -g
 
 cd /mnt/gentoo
 rm -f stage3-*.tar*
@@ -81,22 +81,15 @@ else
     fi
     if [ "$no_gpg_validation" != "1" ]; then
         echo --- Verifying and validating
-        wget -q -O - https://www.gentoo.org/downloads/signatures/ | grep "[A-Z0-9]\{40\}" | sed 's/<[^>]*>//g' | sed 's/(.\+)//g' | while read key; do
-            #gpg --keyserver hkps.pool.sks-keyservers.net --recv-keys $key
-            gpg --keyserver hkps://keys.gentoo.org --recv-keys $key
-        done
-        #gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc || exit 1
-        #gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS || exit 1
-        gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.asc || exit 1
+        wget -O - https://qa-reports.gentoo.org/output/service-keys.gpg | gpg --import
+        gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc || exit 1
     fi
-    if [ "$no_checksum_validation" != "1" ]; then
-        for hashalgo in sha512 whirlpool; do
-            if ! grep -qs $(openssl dgst -$hashalgo stage3-$GENTOO_SUBARCH-????????T??????Z.tar.{bz2,xz} 2> /dev/null | grep -Eo "[0-9a-z]{128,}") stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc; then
-                echo "stage3 $hashalgo checksum mismatch"
-                exit 1
-            fi
-        done
-    fi
+    for hashalgo in sha512 whirlpool; do
+        if ! grep -qs $(openssl dgst -$hashalgo stage3-$GENTOO_SUBARCH-????????T??????Z.tar.{bz2,xz} 2> /dev/null | grep -Eo "[0-9a-z]{128,}") stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc; then
+            echo "stage3 $hashalgo checksum mismatch"
+            exit 1
+        fi
+    done
 fi
 echo --- Unpacking the stage tarball
 if [ -f stage3-*.tar.xz ]; then

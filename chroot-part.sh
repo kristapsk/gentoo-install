@@ -12,6 +12,11 @@ num_cores="`nproc`"
 mkdir -p /etc/portage/package.use
 mkdir -p /etc/portage/package.mask
 
+# ldconfig resolves error "grep: error while loading shared libraries:
+# libpcre.so.1: cannot open shared object file: No such file or directory"
+# after chrooting from other linux than life CD
+ldconfig
+
 function emerge_with_autounmask()
 {
     emerge --autounmask=y --autounmask-write $@
@@ -265,17 +270,6 @@ real_hostname="`eval echo "$TARGET_HOSTNAME"`"
 sed -i "s/127\.0\.0\.1\s\+localhost/127\.0\.0\.1\t$real_hostname localhost/" /etc/hosts
 # Add additional /etc/hosts entries, if needed
 echo "$HOSTS_ADD" >> /etc/hosts
-
-if [ "$(xargs <<< "$LAYMAN_ADD")" != "" ]; then
-    echo --- Configuring additional portage overlays
-    emerge_with_autounmask app-portage/layman
-
-    echo "$LAYMAN_ADD" | while read layman_cmd; do
-        if [ "$layman_cmd" != "" ]; then
-            echo y | layman $layman_cmd
-        fi
-    done
-fi
 
 if [ "$ROOT_PASSWORD" != "" ]; then
     echo --- Setting root password
