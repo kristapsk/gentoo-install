@@ -6,11 +6,12 @@
 # variable to some mirror that is listed as supporting FTP.
 #GENTOO_MIRROR="ftp://distfiles.gentoo.org/pub/gentoo"
 GENTOO_MIRROR="ftp://mirrors.dotsrc.org/gentoo"
+stage3_dowloaded="0"
 COMMON_FLAGS="-march=native -O2 -pipe"
 #COMMON_FLAGS="-march=native -O2 -pipe -ggdb -fno-omit-frame-pointer"
 #CFLAGS="\${COMMON_FLAGS}"
 #CXXFLAGS="\${COMMON_FLAGS}"
-USE="-bindist -X verify-sig vim-syntax perl"
+USE="-bindist X verify-sig vim-syntax perl"
 
 # optional make.conf settings (leave blank for defaults)
 http_proxy=""

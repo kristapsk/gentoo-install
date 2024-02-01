@@ -65,11 +65,14 @@ echo -- Setting the date and time
 timeout 60s ntpd -q -g
 
 cd /mnt/gentoo
-rm -f stage3-*.tar*
 if [ "$LOCAL_STAGE3" != "" ] && [ -f "$LOCAL_STAGE3" ]; then
+    rm -f stage3-*.tar*
     echo --- Using local stage3 copy
     cp "$LOCAL_STAGE3" /mnt/gentoo/
+elif [ "$stage3_dowloaded" == "1" ]; then
+    echo --- Skip downloading stage3. Skip forced in config.
 else
+    rm -f stage3-*.tar*
     echo --- Downloading stage3
     while true; do
         # Specify 10 sec. timeout to faster things up, not all Gentoo mirrors host an FTP server.
@@ -82,11 +85,11 @@ else
     if [ "$no_gpg_validation" != "1" ]; then
         echo --- Verifying and validating
         wget -O - https://qa-reports.gentoo.org/output/service-keys.gpg | gpg --import
-        gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc || exit 1
+        gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS || exit 1
     fi
-    for hashalgo in sha512 whirlpool; do
-        if ! grep -qs $(openssl dgst -$hashalgo stage3-$GENTOO_SUBARCH-????????T??????Z.tar.{bz2,xz} 2> /dev/null | grep -Eo "[0-9a-z]{128,}") stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc; then
-            echo "stage3 $hashalgo checksum mismatch"
+    for hashalgo in sha512 blake2b512; do
+        if ! grep -qs $(openssl dgst -$hashalgo stage3-$GENTOO_SUBARCH-????????T??????Z.tar.{bz2,xz} 2> /dev/null | grep -Eo "[0-9a-z]{128,}") stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS; then
+        	echo "stage3 $hashalgo checksum mismatch"
             exit 1
         fi
     done
