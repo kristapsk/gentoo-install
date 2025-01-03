@@ -119,6 +119,7 @@ SYSTEM_TOOLS="
     app-misc/mc
     app-misc/tmux
     app-portage/gentoolkit
+    dev-debug/gdb
     dev-libs/libpcre2[jit]
     dev-vcs/git
     mail-client/mailx
@@ -128,7 +129,6 @@ SYSTEM_TOOLS="
     net-misc/telnet-bsd
     sys-apps/mlocate
     sys-block/parted
-    sys-devel/gdb
     sys-process/cronie
     sys-process/lsof
 "
