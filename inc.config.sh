@@ -9,7 +9,7 @@ COMMON_FLAGS="-march=native -O2 -pipe"
 #COMMON_FLAGS="-march=native -O2 -pipe -ggdb -fno-omit-frame-pointer"
 #CFLAGS="\${COMMON_FLAGS}"
 #CXXFLAGS="\${COMMON_FLAGS}"
-USE="-bindist -X verify-sig vim-syntax"
+USE="-bindist -X vim-syntax"
 
 # optional make.conf settings (leave blank for defaults)
 http_proxy=""
