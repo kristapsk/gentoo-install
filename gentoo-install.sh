@@ -82,10 +82,10 @@ else
     if [ "$no_gpg_validation" != "1" ]; then
         echo --- Verifying and validating
         wget -O - https://qa-reports.gentoo.org/output/service-keys.gpg | gpg --import
-        gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc || exit 1
+        gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS || exit 1
     fi
-    for hashalgo in sha512 whirlpool; do
-        if ! grep -qs $(openssl dgst -$hashalgo stage3-$GENTOO_SUBARCH-????????T??????Z.tar.{bz2,xz} 2> /dev/null | grep -Eo "[0-9a-z]{128,}") stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS.asc; then
+    for hashalgo in sha512; do
+        if ! grep -qs $(openssl dgst -$hashalgo stage3-$GENTOO_SUBARCH-????????T??????Z.tar.{bz2,xz} 2> /dev/null | grep -Eo "[0-9a-z]{128,}") stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS; then
             echo "stage3 $hashalgo checksum mismatch"
             exit 1
         fi
