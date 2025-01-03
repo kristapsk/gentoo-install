@@ -96,7 +96,7 @@ echo --- Configuring the Kernel
 if [ "$KERNEL_EBUILD" == "" ]; then
 	KERNEL_EBUILD=gentoo-sources
 fi
-emerge_with_autounmask $KERNEL_EBUILD
+USE="symlink" emerge_with_autounmask $KERNEL_EBUILD
 if [ "$KERNEL_EXTRA_FIRMWARE" != "" ]; then
     emerge_with_autounmask $KERNEL_EXTRA_FIRMWARE
 fi
