@@ -85,7 +85,9 @@ else
     if [ "$no_gpg_validation" != "1" ]; then
         echo --- Verifying and validating
         wget -O - https://qa-reports.gentoo.org/output/service-keys.gpg | gpg --import
+        gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.asc || exit 1
         gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS || exit 1
+        gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.sha256 || exit 1
     fi
     for hashalgo in blake2b512 sha512; do
         if ! grep -qs $(openssl dgst -$hashalgo stage3-$GENTOO_SUBARCH-????????T??????Z.tar.{bz2,xz} 2> /dev/null | grep -Eo "[0-9a-z]{128,}") stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS; then
@@ -93,6 +95,10 @@ else
             exit 1
         fi
     done
+    if ! sha256sum --check stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.sha256; then
+        echo "stage3 sha256 checksum mismatch"
+        exit 1
+    fi
 fi
 echo --- Unpacking the stage tarball
 if [ -f stage3-*.tar.xz ]; then
