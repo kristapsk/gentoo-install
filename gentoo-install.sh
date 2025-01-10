@@ -257,9 +257,13 @@ grep "\s/mnt/gentoo" /proc/mounts > /mnt/gentoo/mounts.txt
 mkdir -p /mnt/gentoo/usr/src/initramfs/{bin,dev,etc,lib,lib64,mnt/root,proc,root,sbin,sys}
 cp initramfs-init.sh /mnt/gentoo/usr/src/initramfs/init
 
-mount -t proc proc /mnt/gentoo/proc
+mount --types proc proc /mnt/gentoo/proc
 mount --rbind /sys /mnt/gentoo/sys
+mount --make-rslave /mnt/gentoo/sys
 mount --rbind /dev /mnt/gentoo/dev
+mount --make-rslave /mnt/gentoo/dev
+mount --bind /run /mnt/gentoo/run
+mount --make-rslave /mnt/gentoo/run
 
 # Be sure to always umount, if user presses Ctrl+C.
 # Two traps are needed to guard against executing commands twice.
