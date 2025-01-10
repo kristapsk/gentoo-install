@@ -87,7 +87,7 @@ else
         wget -O - https://qa-reports.gentoo.org/output/service-keys.gpg | gpg --import
         gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS || exit 1
     fi
-    for hashalgo in sha512; do
+    for hashalgo in blake2b512 sha512; do
         if ! grep -qs $(openssl dgst -$hashalgo stage3-$GENTOO_SUBARCH-????????T??????Z.tar.{bz2,xz} 2> /dev/null | grep -Eo "[0-9a-z]{128,}") stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS; then
             echo "stage3 $hashalgo checksum mismatch"
             exit 1
