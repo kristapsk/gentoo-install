@@ -67,6 +67,11 @@ elif command -v ntpd > /dev/null; then
     timeout 60s ntpd -q -g
 fi
 
+if [ "$GENTOO_MIRROR" == "" ]; then
+    echo --- Choosing Gentoo mirror for stage download
+    GENTOO_MIRROR="$(mirrorselect --ftp --deep --output --quiet | grep -Eo "ftp://[^\"]+")"
+fi
+
 cd /mnt/gentoo
 rm -f stage3-*.tar*
 if [ "$LOCAL_STAGE3" != "" ] && [ -f "$LOCAL_STAGE3" ]; then
