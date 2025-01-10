@@ -59,7 +59,10 @@ esac
 
 echo === Installing Gentoo GNU/Linux for $GENTOO_ARCH
 
-if command -v ntpd > /dev/null; then
+if command -v chronyd > /dev/null; then
+    echo -- Setting the date and time
+    chronyd -q
+elif command -v ntpd > /dev/null; then
     echo -- Setting the date and time
     timeout 60s ntpd -q -g
 fi
