@@ -89,7 +89,11 @@ else
     fi
     if [ "$no_gpg_validation" != "1" ]; then
         echo --- Verifying and validating
-        wget -O - https://qa-reports.gentoo.org/output/service-keys.gpg | gpg --import
+        if [[ -f /usr/share/openpgp-keys/gentoo-release.asc ]]; then
+            gpg --import /usr/share/openpgp-keys/gentoo-release.asc || exit 1
+        else
+            gpg --keyserver hkps://keys.gentoo.org --recv-keys 13EBBDBEDE7A12775DFDB1BABB572E0E2D182910 || exit 1
+        fi
         gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.asc || exit 1
         gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.DIGESTS || exit 1
         gpg --verify stage3-$GENTOO_SUBARCH-????????T??????Z.tar*.sha256 || exit 1
