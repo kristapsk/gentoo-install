@@ -510,31 +510,6 @@ case $BOOTLOADER in
         done 3<<< "$bootdevs"
         grub-mkconfig -o /boot/grub/grub.cfg
     ;;
-    grub-legacy)
-        echo ------ Using GRUB Legacy
-        
-        echo ">=sys-boot/grub-2" >> /etc/portage/package.mask/grub
-        if [ "$MACHINE" == "x86_64" ]; then
-            echo "sys-libs/ncurses abi_x86_32" >> /etc/portage/package.use/gentoo-install
-        fi
-        emerge_with_autounmask sys-boot/grub-static
-
-        rootpart="`grep "\s/\s" /etc/fstab | grep -v "^#" | cut -f 1`"
-
-        echo "default 0" > /boot/grub/grub.conf
-        echo "timeout 5" >> /boot/grub/grub.conf
-        echo >> /boot/grub/grub.conf
-        echo "title Gentoo Linux $kernel_version (auto)" >> /boot/grub/grub.conf
-        # FixMe: fix auto-detecting of /boot partition
-        #echo "root $rootgrub" >> /boot/grub/grub.conf
-        echo "root (hd0,0)" >> /boot/grub/grub.conf
-        echo "kernel /boot/kernel-$kernel_version-auto root=$rootpart $ADDITIONAL_KERNEL_ARGS" >> /boot/grub/grub.conf
-        echo "initrd /boot/initramfs-gentoo-install.img" >> /boot/grub/grub.conf
-
-        echo "$bootdevs" | while read bootdev; do
-            echo -e "device (hd0) /dev/$bootdev\nroot (hd0,0)\nsetup (hd0)\nquit" | grub
-        done
-    ;;
     refind)
         echo ------ Using rEFInd
 

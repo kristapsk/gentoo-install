@@ -134,7 +134,7 @@ SYSTEM_TOOLS="
     sys-process/lsof
 "
 
-# Supported bootloaders: grub2, grub-legacy, refind
+# Supported bootloaders: grub2, refind
 BOOTLOADER="grub2"
 
 # Scripts to add to /etc/local.d/, useful for post-install actions on a first boot.
